@@ -73,6 +73,15 @@ npm run typecheck
 - **Groomimine.** Käsitsi saab muuta sõnastust ja kriteeriume, jagada lugusid (kriteeriumid jaotatakse), ühendada kattuvaid lugusid (eelvaade, kriteeriumid ilma korduseta), muuta järjekorda ja märkida lugu täpsustamist vajavaks koos avatud küsimusega. **AI ülevaatus** leiab liiga suured, kattuvad, mittekontrollitavate või puuduvate kriteeriumidega, mockup'ita ja mitte-Connextra lood. Iga leiu juures on probleem, põhjendus ja konkreetne ettepanek valikutega [Rakenda] [Muuda] [Ignoreeri].
 - **Kriteeriumide kontroll.** Reeglipõhine hoiatus hinnanguliste sõnade (kasutajasõbralik, kiire, lihtne, …) ja mitme tingimuse kohta. AI kontrollib oma kriteeriume sama reegli järgi: kui server leiab probleemi, saab AI võimaluse vastust parandada.
 - **Lisad.** Eksport Markdowni ja CSV-sse.
+- **Kiirklahvid.**
+
+  | Klahv | Tegevus |
+  |---|---|
+  | `Ctrl+K` | Käsupalett: soovitatud sammud, lood, mockup'id, etapid, eksport |
+  | `1`–`4` | Järgmise sammu valik vestluses |
+  | `Ctrl+Z` | Viimase muudatuse tagasivõtmine |
+  | `/` | Vestluse sisestusväli |
+  | `Esc` | Loo detailvaate või käsupaleti sulgemine |
 
 ## Arhitektuur
 
