@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkCriterion, isTestable, storyTitle, mergeCriteriaTexts } from "../shared/quality.ts";
+import { checkConnextra, checkCriterion, isTestable, storyTitle, mergeCriteriaTexts } from "../shared/quality.ts";
 
 test("ülesande näidete kontrollitavad kriteeriumid läbivad kontrolli", () => {
   for (const t of [
@@ -35,4 +35,11 @@ test("kriteeriumide ühendamine eemaldab kordused", () => {
     "B kuvatakse",
     "C kuvatakse",
   ]);
+});
+
+test("mitu tegevust ühes loos tuvastatakse, loetelu objektidest mitte", () => {
+  const multi = (action: string) => checkConnextra({ role: "Külastaja", action, benefit: "saada kasu" }).some((i) => i.field === "action");
+  assert.ok(multi("broneerida treeninguid ja tühistada broneeringuid ning maksta trahve"));
+  assert.ok(!multi("näha liikmepakette ja hindu"));
+  assert.ok(!multi("näha uute liikmete ja maksete loendit"));
 });

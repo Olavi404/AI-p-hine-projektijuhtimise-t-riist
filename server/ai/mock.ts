@@ -14,7 +14,7 @@ import type {
   StoriesOut,
 } from "./schemas.ts";
 import type { Story } from "../../shared/types.ts";
-import { checkCriterion, mergeCriteriaTexts, similarity } from "../../shared/quality.ts";
+import { checkConnextra, checkCriterion, mergeCriteriaTexts, similarity } from "../../shared/quality.ts";
 
 export function clarify(_ctx: PromptContext): ClarifyOut {
   return {
@@ -234,7 +234,8 @@ export function review(ctx: PromptContext): ReviewOut {
   }
   for (const s of ctx.stories) {
     if (used.has(s.id)) continue;
-    const parts = s.action.split(/\s(?:ja|ning)\s|,\s/).filter((p) => p.trim().length > 3);
+    const multiple = checkConnextra(s).some((i) => i.field === "action");
+    const parts = multiple ? s.action.split(/\s(?:ja|ning)\s|,\s/).filter((p) => p.trim().length > 3) : [];
     if (parts.length >= 2 || s.criteria.length > 8) {
       used.add(s.id);
       const pieces = parts.length >= 2 ? parts : [s.action, s.action];
@@ -303,21 +304,39 @@ export function review(ctx: PromptContext): ReviewOut {
 }
 
 export function newView(ctx: PromptContext, request: string): NewViewOut {
-  const role = ctx.project.context.roles[0]?.name ?? "Külastaja";
-  const fake = { action: request.toLowerCase(), code: "UUS" } as Story;
-  const mockup = genericMockup({ ...fake, action: request.toLowerCase().slice(0, 60) } as Story);
-  mockup.title = capitalize(request.slice(0, 60));
-  const els = mockup.sections[1].elements;
+  const known: [RegExp, string][] = [
+    [/treener/i, "Treener"],
+    [/admin/i, "Administraator"],
+    [/liik?me/i, "Klubi liige"],
+    [/külasta/i, "Külastaja"],
+  ];
+  const role = known.find(([re]) => re.test(request))?.[1] ?? ctx.project.context.roles[0]?.name ?? "Kasutaja";
+  const title = capitalize(request.replace(/[.!]$/, "").slice(0, 60));
+  const mockup: MockupOut = {
+    title,
+    sections: [
+      { id: "s1", heading: "", layout: "row", elements: [{ id: "e1", type: "nav", label: "Spordiklubi", detail: "", items: ["Avaleht", title.slice(0, 20), "Logi välja"] }] },
+      {
+        id: "s2",
+        heading: title,
+        layout: "stack",
+        elements: [
+          { id: "e2", type: "table", label: "Ülevaade", detail: "", items: ["Nimetus", "Aeg", "Arv", "Jooga", "09:00", "12", "Spinning", "18:00", "20"] },
+          { id: "e3", type: "button", label: "Ava detailid", detail: "", items: [] },
+        ],
+      },
+    ],
+  };
   return {
     message: "Koostasin uue vaate mockup'i koos kasutajaloo ja kriteeriumidega.",
     role,
-    action: `kasutada vaadet „${request.slice(0, 60)}“`,
-    benefit: "saaksin vajaliku toimingu tehtud",
+    action: `näha vaadet „${title}“`,
+    benefit: "mul oleks vajalik info ühes kohas",
     size: "M",
     criteria: [
-      { text: `Vaate pealkiri on „${mockup.title}“.`, element_ids: [els[0].id] },
-      { text: `Vaates on element „${els[0].label}“.`, element_ids: [els[0].id] },
-      { text: `Vaates on nupp „${els[els.length - 1].label}“.`, element_ids: [els[els.length - 1].id] },
+      { text: `Vaate pealkiri on „${title}“.`, element_ids: ["e2"] },
+      { text: "Tabelis on veerud „Nimetus“, „Aeg“ ja „Arv“.", element_ids: ["e2"] },
+      { text: "Iga tabeli rea juures on nupp „Ava detailid“.", element_ids: ["e3"] },
     ],
     mockup,
   };

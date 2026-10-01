@@ -44,7 +44,7 @@ const SUBJECTIVE_WORDS = ["hea", "head", "hääd", "parem", "parim", "mõistlik"
 const CONJUNCTIONS = /\s(?:ja|ning|samuti|and)\s|;/i;
 
 /** Tegusõnad, mis tähistavad eraldi tingimust (3. pööre olevikus või umbisikuline). */
-const VERB_WORDS = new Set(["on", "ei", "saab", "peab", "näeb", "is", "can", "shows"]);
+const VERB_WORDS = new Set(["on", "ei", "saab", "peab", "näeb", "näha", "teha", "olla", "saada", "käia", "viia", "tuua", "is", "can", "shows"]);
 const NOT_VERBS = new Set(["veeb", "klubi", "web", "job", "tab", "sub", "pub", "lab", "hub"]);
 
 function isVerbLike(word: string): boolean {
@@ -53,6 +53,8 @@ function isVerbLike(word: string): boolean {
   if (VERB_WORDS.has(w)) return true;
   if (NOT_VERBS.has(w)) return false;
   if (/(takse|dakse|akse|tud|ti)$/.test(w) && w.length > 5) return true;
+  // da-tegevusnimi (broneerida, tühistada, maksta)
+  if (/(da|ta)$/.test(w) && w.length >= 6) return true;
   return w.length >= 5 && w.endsWith("b");
 }
 

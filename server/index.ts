@@ -9,7 +9,14 @@ import { createProvider } from "./ai/provider.ts";
 import { AiService } from "./ai/service.ts";
 import { createApp } from "./app.ts";
 
-const port = Number(process.env.PORT || 3001);
+// --mock: näidis-AI ilma API võtmeta (testimiseks ja demoks).
+// Näidisandmed hoitakse eraldi failis, et need ei seguneks päris projektidega.
+if (process.argv.includes("--mock")) {
+  process.env.AI_PROVIDER = "mock";
+  process.env.DB_FILE = "data/demo.db";
+}
+
+const port = Number(process.env.API_PORT || 3001);
 const db = openDb(process.env.DB_FILE || "data/app.db");
 const ai = new AiService(createProvider());
 const app = createApp(new Repo(db), ai);

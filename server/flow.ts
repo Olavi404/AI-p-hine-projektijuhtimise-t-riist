@@ -469,6 +469,10 @@ export class Flow {
       newStories: f.new_stories.map((s) => ({ role: s.role, action: s.action, benefit: s.benefit, size: s.size, isView: s.is_view, criteria: s.criteria })),
       status: "pending",
     }));
+    // Uus ülevaatus asendab varasemad ootel ülevaatused (need põhinesid vanemal seisul).
+    for (const old of this.repo.listProposals(projectId)) {
+      if (old.status === "pending" && old.payload.kind === "review") this.repo.updateProposal(projectId, old.id, { status: "rejected" });
+    }
     if (findings.length === 0) {
       this.say(projectId, out.message || "Backlog'ist probleeme ei leitud.");
       return;
