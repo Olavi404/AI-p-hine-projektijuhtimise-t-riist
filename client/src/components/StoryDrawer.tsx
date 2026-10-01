@@ -67,7 +67,7 @@ export function StoryDrawer({ storyId, onClose }: { storyId: string; onClose: ()
         isView,
         criteria: criteria.filter((c) => c.text.trim()).map((c) => ({ text: c.text, elementIds: c.elementIds })),
       }),
-    ).then((ok) => ok && notify("Lugu salvestatud."));
+    );
 
   const setStatus = async (status: StoryStatus) => {
     if (dirty) {

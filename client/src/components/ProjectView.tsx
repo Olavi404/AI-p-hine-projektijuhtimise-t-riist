@@ -1,24 +1,34 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api.ts";
-import { Ctx, type ProjectCtx } from "../state.tsx";
+import { Ctx, isTyping, type ProjectCtx, type ToastAction } from "../state.tsx";
 import type { ChatAction, ProjectState } from "../../../shared/types.ts";
 import { Stepper } from "./Stepper.tsx";
 import { Chat } from "./Chat.tsx";
 import { Backlog } from "./Backlog.tsx";
 import { StoryDrawer } from "./StoryDrawer.tsx";
 import { PrototypePanel } from "./PrototypePanel.tsx";
+import { CommandPalette } from "./CommandPalette.tsx";
 
 type Tab = "backlog" | "prototype";
+
+interface Toast {
+  id: number;
+  msg: string;
+  kind: "info" | "error";
+  action?: ToastAction;
+}
 
 export function ProjectView({ projectId, onClose }: { projectId: string; onClose: () => void }) {
   const [state, setState] = useState<ProjectState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [pendingEcho, setPendingEcho] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
   const [openStoryId, setOpenStoryId] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("backlog");
   const [protoStoryId, setProtoStoryId] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ msg: string; kind: "info" | "error" } | null>(null);
+  const [toast, setToast] = useState<Toast | null>(null);
+  const [palette, setPalette] = useState(false);
   const toastTimer = useRef<number | undefined>(undefined);
   const [resumed, setResumed] = useState(false);
 
@@ -29,17 +39,28 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
       .catch((e: Error) => setError(e.message));
   }, [projectId]);
 
-  const notify = useCallback((msg: string, kind: "info" | "error" = "info") => {
-    setToast({ msg, kind });
+  const notify = useCallback((msg: string, kind: "info" | "error" = "info", action?: ToastAction) => {
+    setToast({ id: Date.now(), msg, kind, action });
     window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToast(null), kind === "error" ? 7000 : 3500);
+    toastTimer.current = window.setTimeout(() => setToast(null), kind === "error" ? 7000 : action ? 6000 : 3500);
   }, []);
+
+  const undo = useCallback(async () => {
+    try {
+      const res = await api.undo(projectId);
+      setState(res);
+      notify(`Tagasi võetud: ${res.undone}`);
+    } catch (e) {
+      notify((e as Error).message, "error");
+    }
+  }, [projectId, notify]);
 
   const run = useCallback(
     async (action: ChatAction, userEcho?: string) => {
       setBusy(true);
       setResumed(true);
       setPendingEcho(userEcho ?? null);
+      setPendingAction(action);
       try {
         setState(await api.chat(projectId, action));
       } catch (e) {
@@ -47,6 +68,7 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
       } finally {
         setBusy(false);
         setPendingEcho(null);
+        setPendingAction(null);
       }
     },
     [projectId, notify],
@@ -55,15 +77,43 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
   const mutate = useCallback(
     async (fn: () => Promise<ProjectState>) => {
       try {
-        setState(await fn());
+        const next = await fn();
+        setState(next);
+        notify(next.undo.label ? `Salvestatud: ${next.undo.label}` : "Salvestatud", "info", next.undo.available ? { label: "Võta tagasi", run: undo } : undefined);
         return true;
       } catch (e) {
         notify((e as Error).message, "error");
         return false;
       }
     },
-    [notify],
+    [notify, undo],
   );
+
+  // Kiirklahvid: Ctrl+K käsupalett, Ctrl+Z tagasivõtmine, "/" vestluse sisestusväli.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPalette((v) => !v);
+        return;
+      }
+      if (isTyping(e)) return;
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && state?.undo.available) {
+        e.preventDefault();
+        undo();
+      } else if (e.key === "/" && !palette) {
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent("focus-chat-input", { detail: "" }));
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [undo, state?.undo.available, palette]);
+
+  const showPrototype = useCallback((id: string) => {
+    setProtoStoryId(id);
+    setTab("prototype");
+  }, []);
 
   const ctx: ProjectCtx | null = useMemo(
     () =>
@@ -71,15 +121,14 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
         state,
         run,
         mutate,
+        undo,
         busy,
+        pendingAction,
         openStory: setOpenStoryId,
-        showPrototype: (id: string) => {
-          setProtoStoryId(id);
-          setTab("prototype");
-        },
+        showPrototype,
         notify,
       },
-    [state, run, mutate, busy, notify],
+    [state, run, mutate, undo, busy, pendingAction, showPrototype, notify],
   );
 
   if (error) {
@@ -92,17 +141,13 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
       </div>
     );
   }
-  if (!ctx || !state) return <div className="loading">Laen projekti…</div>;
-
-  const undo = async () => {
-    try {
-      const res = await api.undo(projectId);
-      setState(res);
-      notify(`Tagasi võetud: ${res.undone}`);
-    } catch (e) {
-      notify((e as Error).message, "error");
-    }
-  };
+  if (!ctx || !state) {
+    return (
+      <div className="loading">
+        <span className="spinner" /> Laen projekti…
+      </div>
+    );
+  }
 
   return (
     <Ctx.Provider value={ctx}>
@@ -118,8 +163,12 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
           <div className="topbar-actions">
             {!state.ai.available && <span className="tag warn">AI pole seadistatud</span>}
             {state.ai.provider === "mock" && <span className="tag info">Näidis-AI</span>}
-            <button className="btn" onClick={undo} disabled={!state.undo.available} title={state.undo.label ? `Võta tagasi: ${state.undo.label}` : "Pole midagi tagasi võtta"}>
-              ↶ Võta tagasi{state.undo.label ? `: ${shorten(state.undo.label, 36)}` : ""}
+            <button className="btn cmdk" onClick={() => setPalette(true)} title="Käsupalett">
+              <span>Käsud</span>
+              <kbd>Ctrl K</kbd>
+            </button>
+            <button className="btn" onClick={undo} disabled={!state.undo.available} title={state.undo.label ? `Võta tagasi: ${state.undo.label} (Ctrl+Z)` : "Pole midagi tagasi võtta"}>
+              ↶ Võta tagasi{state.undo.label ? `: ${shorten(state.undo.label, 30)}` : ""}
             </button>
             <a className="btn ghost" href={`/api/projects/${projectId}/export.md`} download>
               Markdown
@@ -137,17 +186,36 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
           <section className="side-col">
             <nav className="tabs">
               <button className={tab === "backlog" ? "active" : ""} onClick={() => setTab("backlog")}>
-                Backlog ({state.stories.length})
+                Backlog <span className="count">{state.stories.length}</span>
               </button>
               <button className={tab === "prototype" ? "active" : ""} onClick={() => setTab("prototype")}>
                 Prototüüp
               </button>
             </nav>
-            {tab === "backlog" ? <Backlog /> : <PrototypePanel storyId={protoStoryId ?? state.project.focusStoryId} onSelect={setProtoStoryId} />}
+            <div className="tab-body" key={tab}>
+              {tab === "backlog" ? <Backlog /> : <PrototypePanel storyId={protoStoryId ?? state.project.focusStoryId} onSelect={setProtoStoryId} />}
+            </div>
           </section>
         </main>
         {openStoryId && state.stories.some((s) => s.id === openStoryId) && <StoryDrawer storyId={openStoryId} onClose={() => setOpenStoryId(null)} />}
-        {toast && <div className={`toast ${toast.kind}`}>{toast.msg}</div>}
+        {palette && <CommandPalette onClose={() => setPalette(false)} onTab={setTab} />}
+        {toast && (
+          <div key={toast.id} className={`toast ${toast.kind}`} role="status">
+            <span>{toast.msg}</span>
+            {toast.action && (
+              <button
+                className="toast-action"
+                onClick={() => {
+                  toast.action!.run();
+                  setToast(null);
+                }}
+              >
+                {toast.action.label}
+              </button>
+            )}
+            <span className="toast-timer" />
+          </div>
+        )}
       </div>
     </Ctx.Provider>
   );

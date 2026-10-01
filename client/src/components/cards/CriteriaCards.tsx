@@ -19,6 +19,7 @@ export function CriteriaMockupCard({ proposal }: { proposal: Proposal }) {
   const [rows, setRows] = useState<Row[]>(() => (payload?.criteria ?? []).map((c) => ({ ...c, decision: "pending", edited: false })));
   const [editing, setEditing] = useState<number | null>(null);
   const [hover, setHover] = useState<string[]>([]);
+  const [hoverEl, setHoverEl] = useState<string | null>(null);
   const [includeMockup, setIncludeMockup] = useState(true);
   if (!payload) return null;
   const story = storyById(state, payload.storyId);
@@ -47,7 +48,7 @@ export function CriteriaMockupCard({ proposal }: { proposal: Proposal }) {
             {shown.map((c, i) => (
               <li
                 key={i}
-                className={`crit ${c.decision}`}
+                className={`crit ${c.decision}${hoverEl && c.elementIds.includes(hoverEl) ? " hl" : ""}`}
                 onMouseEnter={() => setHover(c.elementIds)}
                 onMouseLeave={() => setHover([])}
               >
@@ -96,7 +97,7 @@ export function CriteriaMockupCard({ proposal }: { proposal: Proposal }) {
         </div>
         {payload.mockup && (
           <div>
-            <MockupView spec={payload.mockup} highlight={hover} compact />
+            <MockupView spec={payload.mockup} highlight={hoverEl ? [hoverEl] : hover} onHover={setHoverEl} compact />
             {pending && (
               <label className="small">
                 <input type="checkbox" checked={includeMockup} onChange={(e) => setIncludeMockup(e.target.checked)} /> Lisa mockup loole

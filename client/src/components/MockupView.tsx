@@ -9,9 +9,11 @@ interface Props {
   /** Võrdlusversioon: muutunud ja uued elemendid märgitakse. */
   compareTo?: MockupSpec | null;
   compact?: boolean;
+  /** Elemendile osutamisel teatatakse selle id (et esile tõsta seotud kriteeriumid). */
+  onHover?: (id: string | null) => void;
 }
 
-export function MockupView({ spec, highlight = [], compareTo, compact }: Props) {
+export function MockupView({ spec, highlight = [], compareTo, compact, onHover }: Props) {
   const before = new Map<string, string>();
   compareTo?.sections.forEach((s) => s.elements.forEach((e) => before.set(e.id, JSON.stringify(e))));
   const status = (e: MockupElement) => {
@@ -22,7 +24,7 @@ export function MockupView({ spec, highlight = [], compareTo, compact }: Props) 
   };
 
   return (
-    <div className={`mockup${compact ? " compact" : ""}`} aria-label={`Mockup: ${spec.title}`}>
+    <div className={`mockup${compact ? " compact" : ""}${onHover ? " linkable" : ""}${highlight.length ? " has-hl" : ""}`} aria-label={`Mockup: ${spec.title}`}>
       <div className="mockup-chrome">
         <span className="dot" />
         <span className="dot" />
@@ -35,7 +37,7 @@ export function MockupView({ spec, highlight = [], compareTo, compact }: Props) 
             {s.heading && <h4 className="mk-section-heading">{s.heading}</h4>}
             <div className="mk-elements">
               {s.elements.map((e) => (
-                <div key={e.id} className={`mk-el mk-${e.type}${highlight.includes(e.id) ? " hl" : ""}${status(e)}`} data-el={e.id} title={e.id}>
+                <div key={e.id} className={`mk-el mk-${e.type}${highlight.includes(e.id) ? " hl" : ""}${status(e)}`} data-el={e.id} title={e.id} onMouseEnter={onHover ? () => onHover(e.id) : undefined} onMouseLeave={onHover ? () => onHover(null) : undefined}>
                   <ElementBody el={e} />
                 </div>
               ))}

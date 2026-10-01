@@ -9,6 +9,7 @@ export function PrototypePanel({ storyId, onSelect }: { storyId: string | null; 
   const { state, run, busy, openStory } = useProject();
   const story = storyById(state, storyId) ?? null;
   const [hover, setHover] = useState<string[]>([]);
+  const [hoverEl, setHoverEl] = useState<string | null>(null);
   const [viewText, setViewText] = useState("");
   const [refineText, setRefineText] = useState("");
   const aiOff = !state.ai.available;
@@ -42,7 +43,7 @@ export function PrototypePanel({ storyId, onSelect }: { storyId: string | null; 
             <div>
               {story.mockup ? (
                 <>
-                  <MockupView spec={story.mockup.spec} highlight={hover} />
+                  <MockupView spec={story.mockup.spec} highlight={hoverEl ? [hoverEl] : hover} onHover={setHoverEl} />
                   <p className="muted small">
                     Mockup v{story.mockup.version} ({story.mockupVersionCount} versiooni) · {story.mockup.note}
                   </p>
@@ -59,7 +60,7 @@ export function PrototypePanel({ storyId, onSelect }: { storyId: string | null; 
               <p className="muted small">Osuta kriteeriumile – mockup'is tõstetakse esile vastav element.</p>
               <ol className="criteria-list">
                 {story.criteria.map((c) => (
-                  <li key={c.id} className={`crit${c.elementIds.length ? " linked" : ""}`} onMouseEnter={() => setHover(c.elementIds)} onMouseLeave={() => setHover([])}>
+                  <li key={c.id} className={`crit${c.elementIds.length ? " linked" : ""}${hoverEl && c.elementIds.includes(hoverEl) ? " hl" : ""}`} onMouseEnter={() => setHover(c.elementIds)} onMouseLeave={() => setHover([])}>
                     <span className="crit-text">{c.text}</span>
                     <CriterionWarnings text={c.text} />
                   </li>
