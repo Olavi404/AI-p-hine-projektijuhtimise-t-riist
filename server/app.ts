@@ -6,6 +6,7 @@ import { AiService } from "./ai/service.ts";
 import { Flow } from "./flow.ts";
 import { mergeStories, splitStory, updateStory } from "./backlog.ts";
 import { toCsv, toMarkdown } from "./export.ts";
+import { galleryHtml, slugify, writeGalleryFolder, type GalleryStory } from "./gallery.ts";
 import {
   ChatActionSchema,
   MergeSchema,
@@ -19,7 +20,8 @@ import {
 } from "./validation.ts";
 import type { ProjectState } from "../shared/types.ts";
 
-export function createApp(repo: Repo, ai: AiService): express.Express {
+export function createApp(repo: Repo, ai: AiService, opts: { exportDir?: string } = {}): express.Express {
+  const exportDir = opts.exportDir ?? process.env.EXPORT_DIR ?? "exports";
   const app = express();
   const flow = new Flow(repo, ai);
   const busy = new Set<string>();
@@ -183,6 +185,36 @@ export function createApp(repo: Repo, ai: AiService): express.Express {
   app.get("/api/projects/:id/export.csv", (req, res) => {
     const id = pid(req);
     res.type("text/csv; charset=utf-8").attachment("backlog.csv").send(toCsv(repo.listStories(id)));
+  });
+
+  // ---------- Mockup'ide galerii ----------
+
+  const gallery = (projectId: string) => {
+    const stories = repo.listStories(projectId);
+    const items: GalleryStory[] = stories.filter((s) => s.mockup).map((story) => ({ story, versions: repo.listMockupVersions(story.id) }));
+    const missing = stories.filter((s) => s.isView && !s.mockup);
+    return { items, missing };
+  };
+
+  app.get("/api/projects/:id/gallery", (req, res) => {
+    const id = pid(req);
+    const { items, missing } = gallery(id);
+    res.json({ items, missingIds: missing.map((s) => s.id) });
+  });
+
+  app.get("/api/projects/:id/export/gallery.html", (req, res) => {
+    const id = pid(req);
+    const project = repo.getProject(id);
+    const { items, missing } = gallery(id);
+    res.type("text/html; charset=utf-8").attachment(`${slugify(project.name)}-galerii.html`).send(galleryHtml(project, items, missing));
+  });
+
+  app.post("/api/projects/:id/export/gallery", (req, res) => {
+    const id = pid(req);
+    const project = repo.getProject(id);
+    const { items, missing } = gallery(id);
+    const out = writeGalleryFolder(exportDir, project, items, missing);
+    res.json({ dir: out.dir, files: out.files, count: items.length });
   });
 
   app.use("/api", (_req, res) => {

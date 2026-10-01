@@ -73,6 +73,7 @@ npm run typecheck
 | `AI_FALLBACKS` | `default` | Serveripoolne varumudel, kui mudel keeldub vastamast (`off` lülitab välja) |
 | `API_PORT` | `3001` | API serveri port |
 | `DB_FILE` | `data/app.db` | SQLite andmebaasi fail |
+| `EXPORT_DIR` | `exports` | Kaust, kuhu galeriid salvestatakse |
 
 ## Funktsioonid
 
@@ -83,6 +84,7 @@ npm run typecheck
 - **Kliendi täpsustus.** AI koostab muudatusettepaneku (sõnastus, kriteeriumid, mockup) eelvaatega enne → pärast ning valikutega [Rakenda] [Muuda] [Loobu]. Server rakendab muudatuse ainult ettepanekuga seotud loole. Kui täpsustus puudutab ka teisi lugusid, pakutakse nende muutmist eraldi ettepanekutena.
 - **Groomimine.** Käsitsi saab muuta sõnastust ja kriteeriume, jagada lugusid (kriteeriumid jaotatakse), ühendada kattuvaid lugusid (eelvaade, kriteeriumid ilma korduseta), muuta järjekorda ja märkida lugu täpsustamist vajavaks koos avatud küsimusega. **AI ülevaatus** leiab liiga suured, kattuvad, mittekontrollitavate või puuduvate kriteeriumidega, mockup'ita ja mitte-Connextra lood. Iga leiu juures on probleem, põhjendus ja konkreetne ettepanek valikutega [Rakenda] [Muuda] [Ignoreeri].
 - **Kriteeriumide kontroll.** Reeglipõhine hoiatus hinnanguliste sõnade (kasutajasõbralik, kiire, lihtne, …) ja mitme tingimuse kohta. AI kontrollib oma kriteeriume sama reegli järgi: kui server leiab probleemi, saab AI võimaluse vastust parandada.
+- **Mockup'ide galerii.** Projekti vahelehel „Galerii“ on kõigi lugude mockup'id kaartidena (soovi korral kõik versioonid). Kaardile klõpsates avaneb suurendusvaade koos kriteeriumide, versioonide ja noolteklahvidega liikumisega. Lood, millel mockup puudub, on eraldi loetelus koos nupuga „Loo mockup“. Nupp **Salvesta kausta** kirjutab galerii projekti kausta `exports/<projekt>/` (`galerii.html` avaneb ilma rakenduseta ja seda saab kliendile saata; `mockups.json` sisaldab kõiki versioone). Kaust `exports/` on `.gitignore`-is, sest sisaldab projekti andmeid.
 - **Lisad.** Eksport Markdowni ja CSV-sse.
 - **Kiirklahvid.**
 

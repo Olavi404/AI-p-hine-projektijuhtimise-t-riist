@@ -13,7 +13,7 @@ interface Command {
 }
 
 /** Käsupalett (Ctrl+K): kõik peamised tegevused klaviatuurilt. */
-export function CommandPalette({ onClose, onTab }: { onClose: () => void; onTab: (t: "backlog" | "prototype") => void }) {
+export function CommandPalette({ onClose, onTab }: { onClose: () => void; onTab: (t: "backlog" | "prototype" | "gallery") => void }) {
   const { state, run, undo, openStory, showPrototype, busy } = useProject();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -30,6 +30,7 @@ export function CommandPalette({ onClose, onTab }: { onClose: () => void; onTab:
     if (state.undo.available) list.push({ id: "undo", group: "Backlog", label: `Võta tagasi: ${state.undo.label}`, hint: "Ctrl Z", run: () => void undo() });
     list.push({ id: "tab-b", group: "Vaade", label: "Ava backlog", run: () => onTab("backlog") });
     list.push({ id: "tab-p", group: "Vaade", label: "Ava prototüüp", run: () => onTab("prototype") });
+    list.push({ id: "tab-g", group: "Vaade", label: "Ava mockup'ide galerii", run: () => onTab("gallery") });
     list.push({ id: "chat", group: "Vaade", label: "Kirjuta vestlusesse", hint: "/", run: () => window.dispatchEvent(new CustomEvent("focus-chat-input", { detail: "" })) });
     for (const s of state.stories) {
       list.push({ id: `open-${s.id}`, group: "Lood", label: `${s.code} ${storyTitle(s)}`, run: () => openStory(s.id) });

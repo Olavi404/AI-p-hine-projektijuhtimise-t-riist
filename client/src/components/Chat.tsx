@@ -194,7 +194,7 @@ export function NextSteps({ steps, hotkeys }: { steps: NextStep[]; hotkeys?: boo
     if (!hotkeys) return;
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (busy || isTyping(e) || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (document.querySelector(".drawer, .palette")) return;
+      if (document.querySelector(".drawer, .palette, .lightbox")) return;
       const n = Number(e.key);
       if (n >= 1 && n <= steps.length) {
         e.preventDefault();

@@ -8,8 +8,9 @@ import { Backlog } from "./Backlog.tsx";
 import { StoryDrawer } from "./StoryDrawer.tsx";
 import { PrototypePanel } from "./PrototypePanel.tsx";
 import { CommandPalette } from "./CommandPalette.tsx";
+import { Gallery } from "./Gallery.tsx";
 
-type Tab = "backlog" | "prototype";
+export type Tab = "backlog" | "prototype" | "gallery";
 
 interface Toast {
   id: number;
@@ -191,9 +192,14 @@ export function ProjectView({ projectId, onClose }: { projectId: string; onClose
               <button className={tab === "prototype" ? "active" : ""} onClick={() => setTab("prototype")}>
                 Prototüüp
               </button>
+              <button className={tab === "gallery" ? "active" : ""} onClick={() => setTab("gallery")}>
+                Galerii <span className="count">{state.stories.filter((s) => s.mockup).length}</span>
+              </button>
             </nav>
             <div className="tab-body" key={tab}>
-              {tab === "backlog" ? <Backlog /> : <PrototypePanel storyId={protoStoryId ?? state.project.focusStoryId} onSelect={setProtoStoryId} />}
+              {tab === "backlog" && <Backlog />}
+              {tab === "prototype" && <PrototypePanel storyId={protoStoryId ?? state.project.focusStoryId} onSelect={setProtoStoryId} />}
+              {tab === "gallery" && <Gallery />}
             </div>
           </section>
         </main>

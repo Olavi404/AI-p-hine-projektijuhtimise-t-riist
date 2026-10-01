@@ -4,6 +4,7 @@ import { App } from "./App.tsx";
 import "./styles.css";
 import "./interactive.css";
 import "./home.css";
+import "./gallery.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

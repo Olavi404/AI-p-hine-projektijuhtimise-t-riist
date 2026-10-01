@@ -1,5 +1,10 @@
 // Brauseri pool suhtleb ainult oma serveriga; AI võti brauserisse ei jõua.
-import type { ChatAction, CriterionDraft, MockupVersion, ProjectState, ProjectSummary, StoryDraft, StoryStatus, StorySize, OpenQuestion } from "../../shared/types.ts";
+import type { ChatAction, CriterionDraft, MockupVersion, ProjectState, ProjectSummary, Story, StoryDraft, StoryStatus, StorySize, OpenQuestion } from "../../shared/types.ts";
+
+export interface GalleryData {
+  items: { story: Story; versions: MockupVersion[] }[];
+  missingIds: string[];
+}
 
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, {
@@ -41,5 +46,7 @@ export const api = {
   mockupVersions: (id: string, storyId: string) => request<MockupVersion[]>("GET", `/api/projects/${id}/stories/${storyId}/mockups`),
   restoreMockup: (id: string, storyId: string, mockupId: string) =>
     request<ProjectState>("POST", `/api/projects/${id}/stories/${storyId}/mockups/restore`, { mockupId }),
+  gallery: (id: string) => request<GalleryData>("GET", `/api/projects/${id}/gallery`),
+  exportGallery: (id: string) => request<{ dir: string; files: string[]; count: number }>("POST", `/api/projects/${id}/export/gallery`),
   undo: (id: string) => request<ProjectState & { undone: string }>("POST", `/api/projects/${id}/undo`),
 };
