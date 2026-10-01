@@ -126,6 +126,9 @@ class AnthropicProvider implements AiProvider {
       }
       if (err instanceof Anthropic.BadRequestError) {
         const msg = String(err.message);
+        if (/credit balance/i.test(msg)) {
+          throw new AiError("Anthropic kontol pole piisavalt krediiti. Lisa krediiti: console.anthropic.com → Plans & Billing. Backlog'i saab seni hallata käsitsi.");
+        }
         // Kui konto ei toeta varumudelit või struktureeritud väljundit, jätkame ilma nendeta.
         if (this.useFallbacks && /fallback/i.test(msg)) {
           this.useFallbacks = false;
