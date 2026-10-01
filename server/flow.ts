@@ -402,6 +402,25 @@ export class Flow {
       .map((o) => ({ story: this.storyByCode(projectId, o.story_code), reason: o.reason }))
       .filter((o) => o.story && o.story.id !== storyId)
       .map((o) => ({ storyId: o.story!.id, reason: o.reason }));
+    const unchanged =
+      before.role === after.role &&
+      before.action === after.action &&
+      before.benefit === after.benefit &&
+      JSON.stringify(before.criteria.map((c) => c.text)) === JSON.stringify(after.criteria.map((c) => c.text)) &&
+      JSON.stringify(before.mockup) === JSON.stringify(after.mockup);
+    if (unchanged) {
+      // Täpsustus on loos juba kaetud: tühja muudatusettepanekut ei näidata.
+      this.say(projectId, `Loos ${story.code} pole vaja midagi muuta: ${out.summary}`, { nextSteps: otherStories.length ? [] : this.steps(projectId) });
+      for (const o of otherStories) {
+        const other = this.repo.getStory(o.storyId);
+        this.say(projectId, `Ettepanek loole ${other.code}: ${o.reason}`, {
+          card: { kind: "suggestion", storyId: o.storyId, reason: o.reason },
+          nextSteps: [{ label: `Koosta muudatusettepanek loole ${other.code}`, action: { type: "refine", storyId: o.storyId, text: `${request} (${o.reason})` } }],
+        });
+      }
+      if (otherStories.length) this.say(projectId, "Mida teeme edasi?");
+      return;
+    }
     const p = this.repo.createProposal(projectId, storyId, { kind: "change", storyId, request, summary: out.summary, before, after, otherStories });
     this.say(projectId, `Muudatusettepanek loole ${story.code}: ${out.summary}`, { card: { kind: "proposal", proposalId: p.id } });
   }

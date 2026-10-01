@@ -36,6 +36,16 @@ npm start
 
 Ava **http://localhost:3001**: server serveerib nii API-t kui ka ehitatud kasutajaliidest.
 
+### Claude Pro/Max tellimusega (ilma API krediidita)
+
+Kui sul on Claude'i tellimus, võib AI töötada kohaliku Claude Code'i käsurea kaudu:
+
+1. Paigalda Claude Code (PowerShellis `irm https://claude.ai/install.ps1 | iex`), käivita `claude` ja logi sisse oma Claude'i kontoga.
+2. Pane `.env` faili `AI_PROVIDER=claude-code` (API võtit pole vaja).
+3. Käivita `npm run dev`.
+
+Server kutsub iga AI sammu jaoks `claude -p` käsku (struktureeritud väljund `--json-schema` abil, tööriistad välja lülitatud). Kasutus läheb tellimuse limiitide arvelt ja töötab ainult arvutis, kus Claude Code on sisse logitud. Avalikku serverisse paigaldamiseks kasuta API võtit.
+
 ### Näidis-AI ilma võtmeta
 
 ```bash
@@ -56,7 +66,8 @@ npm run typecheck
 | Muutuja | Vaikimisi | Tähendus |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | – | Claude API võti. Ainult serveris; brauserisse ega repositooriumisse see ei jõua. |
-| `AI_PROVIDER` | `anthropic` | `mock` = etteantud näidisvastused |
+| `AI_PROVIDER` | `anthropic` | `anthropic` = Claude API, `claude-code` = kohalik Claude Code tellimusega, `mock` = etteantud näidisvastused |
+| `CLAUDE_BIN` | – | `claude-code` korral claude.exe asukoht, kui see pole PATH-is ega `~/.local/bin` all |
 | `AI_MODEL` | `claude-opus-5-5` | Claude mudel |
 | `AI_EFFORT` | `medium` | `low` / `medium` / `high`. Madalam on kiirem. |
 | `AI_FALLBACKS` | `default` | Serveripoolne varumudel, kui mudel keeldub vastamast (`off` lülitab välja) |

@@ -3,6 +3,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import type { z } from "zod";
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 
 export type StepName =
   | "clarify"
@@ -46,7 +50,9 @@ export interface AiProvider {
 const MAX_ATTEMPTS = 3;
 
 export function createProvider(env: NodeJS.ProcessEnv = process.env): AiProvider {
-  if ((env.AI_PROVIDER ?? "anthropic").toLowerCase() === "mock") return new MockProvider();
+  const provider = (env.AI_PROVIDER ?? "anthropic").toLowerCase();
+  if (provider === "mock") return new MockProvider();
+  if (provider === "claude-code") return new ClaudeCodeProvider(env);
   return new AnthropicProvider(env);
 }
 
@@ -189,6 +195,113 @@ function extractJson(text: string): string {
   const start = trimmed.indexOf("{");
   const end = trimmed.lastIndexOf("}");
   return start >= 0 && end > start ? trimmed.slice(start, end + 1) : trimmed;
+}
+
+/**
+ * Kohalik Claude Code'i käsurida (`claude -p`), mis kasutab sisseloginud kasutaja Claude'i tellimust.
+ * Mõeldud arendajale enda arvutis; serverisse paigaldamiseks kasuta API võtit.
+ */
+class ClaudeCodeProvider implements AiProvider {
+  readonly name = "claude-code";
+  private bin: string | null;
+  private model: string | undefined;
+  private effort: string;
+  private timeoutMs: number;
+
+  constructor(env: NodeJS.ProcessEnv) {
+    this.bin = findClaudeBinary(env);
+    this.model = env.AI_MODEL || undefined;
+    this.effort = (env.AI_EFFORT || "medium").toLowerCase();
+    this.timeoutMs = Number(env.CLAUDE_CODE_TIMEOUT_MS || 240_000);
+  }
+
+  get available(): boolean {
+    return this.bin !== null;
+  }
+
+  async generate<T>(task: AiTask<T>): Promise<T> {
+    if (!this.bin) {
+      throw new AiError("Claude Code'i käsurida ei leitud. Paigalda see (irm https://claude.ai/install.ps1 | iex) või määra CLAUDE_BIN.", false);
+    }
+    const schema = zodOutputFormat(task.schema as z.ZodType<T>).schema;
+    let feedback = "";
+    let lastProblem = "";
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      const text = await this.run(task.system, task.user + feedback, schema);
+      const result = parseAndValidate(task, text, attempt === MAX_ATTEMPTS);
+      if (result.ok) return result.value;
+      lastProblem = result.problems.join("; ");
+      console.warn(`[ai] ${task.step}: vastus ei läbinud kontrolli (katse ${attempt}): ${lastProblem}`);
+      feedback =
+        `\n\nSinu eelmine vastus ei läbinud serveri kontrolli. Paranda need probleemid ja vasta uuesti kogu JSON-iga:\n- ` +
+        result.problems.join("\n- ") +
+        `\n\nEelmine vastus:\n${text.slice(0, 6000)}`;
+    }
+    throw new AiError(`AI vastus ei vastanud oodatud vormile ka pärast ${MAX_ATTEMPTS} katset. Proovi uuesti. (${lastProblem.slice(0, 200)})`);
+  }
+
+  private run(system: string, prompt: string, schema: Record<string, unknown>): Promise<string> {
+    const args = ["-p", "--output-format", "json", "--json-schema", JSON.stringify(schema), "--system-prompt", system, "--tools", "", "--no-session-persistence"];
+    if (this.model) args.push("--model", this.model);
+    if (["low", "medium", "high"].includes(this.effort)) args.push("--effort", this.effort);
+    // API võti ei tohi lapsprotsessi jõuda, muidu kasutaks Claude Code tellimuse asemel API krediiti.
+    const env = { ...process.env };
+    delete env.ANTHROPIC_API_KEY;
+    delete env.ANTHROPIC_AUTH_TOKEN;
+    delete env.CLAUDECODE;
+
+    return new Promise((resolve, reject) => {
+      // Viip läheb stdin-i kaudu (Windowsi käsurea pikkuse piirang); töökaust on ajutine, et projekti faile ei loetaks.
+      const child = spawn(this.bin!, args, { cwd: os.tmpdir(), env, stdio: ["pipe", "pipe", "pipe"], windowsHide: true });
+      let out = "";
+      let err = "";
+      const timer = setTimeout(() => {
+        child.kill();
+        reject(new AiError(`Claude Code ei vastanud ${Math.round(this.timeoutMs / 1000)} sekundi jooksul. Proovi uuesti.`));
+      }, this.timeoutMs);
+      child.stdout.on("data", (d) => (out += d));
+      child.stderr.on("data", (d) => (err += d));
+      child.on("error", (e) => {
+        clearTimeout(timer);
+        reject(new AiError(`Claude Code'i käivitamine ebaõnnestus: ${e.message}`, false));
+      });
+      child.on("close", (code) => {
+        clearTimeout(timer);
+        let res: { is_error?: boolean; result?: unknown; structured_output?: unknown; subtype?: string } | null = null;
+        try {
+          res = JSON.parse(out);
+        } catch {
+          res = null;
+        }
+        if (!res) {
+          return reject(new AiError(`Claude Code lõpetas veaga (kood ${code}): ${(err || out).trim().slice(0, 300)}`));
+        }
+        if (res.is_error) {
+          const msg = String(res.result ?? err ?? "").trim();
+          if (/log ?in|not logged|authenticat|invalid api key|oauth/i.test(msg)) {
+            return reject(new AiError("Claude Code pole sisse logitud. Käivita terminalis `claude` ja logi sisse oma Claude'i kontoga.", false));
+          }
+          if (/usage limit|rate limit|quota|limit reached/i.test(msg)) {
+            return reject(new AiError(`Claude'i tellimuse kasutuslimiit on täis: ${msg.slice(0, 200)}`));
+          }
+          return reject(new AiError(`Claude Code tagastas vea: ${msg.slice(0, 300)}`));
+        }
+        resolve(res.structured_output !== undefined ? JSON.stringify(res.structured_output) : String(res.result ?? ""));
+      });
+      child.stdin.end(prompt);
+    });
+  }
+}
+
+/** Claude Code'i käivitusfail: CLAUDE_BIN, PATH-is olev `claude` või paigaldaja vaikekoht. */
+function findClaudeBinary(env: NodeJS.ProcessEnv): string | null {
+  const exe = process.platform === "win32" ? ["claude.exe"] : ["claude"];
+  const candidates = [
+    env.CLAUDE_BIN,
+    ...(env.PATH ?? env.Path ?? "").split(path.delimiter).flatMap((dir) => (dir ? exe.map((e) => path.join(dir, e)) : [])),
+    ...exe.map((e) => path.join(os.homedir(), ".local", "bin", e)),
+  ].filter((p): p is string => !!p);
+  return candidates.find((p) => fs.existsSync(p)) ?? null;
 }
 
 /** Testimiseks ja demoks ilma API võtmeta: tagastab etteantud näidisvastused, mis läbivad sama kontrolli. */

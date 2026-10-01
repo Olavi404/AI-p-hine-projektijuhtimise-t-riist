@@ -12,13 +12,16 @@
 
 - **Kliendile jagatav link (C3) ja story map (C4)** on tegemata.
 - **Kõnesisend** puudub.
-- **Päris Claude API-ga on testitud vähem kui näidis-AI-ga.** Automaattestid kasutavad näidis-AI-d, et need oleksid korratavad ja tasuta. Päris mudeli vastuste kvaliteeti tuleb hinnata käsitsi.
+- **Päris AI-ga on kogu töövoog läbi tehtud** (Claude Opus 5.5 Claude Code'i kaudu): idee → 3 täpsustavat küsimust → 4 rolli → 8 lugu → prioriteet → 6 kriteeriumi + mockup → täpsustus → ülevaatus 11 leiuga. Sammude kestus oli umbes 8–27 s, ülevaatus 64 s. Automaattestid kasutavad näidis-AI-d, et need oleksid korratavad ja tasuta.
 - **Tagasivõtmine** puudutab backlog'i (lood, kriteeriumid, mockup'id, MVP joon). Vestluse sõnumeid ja ettepanekute olekut see tagasi ei võta: rakendatud ettepanek jääb vestluses „kinnitatuks“, kuigi muudatus ise on tagasi võetud.
 - **Mitme kasutaja samaaegset tööd** sama projektiga ei toetata (autentimist pole; samal ajal saab teha ainult ühe vestluspäringu projekti kohta).
 - **Mockup'i elemente** saab muuta ainult AI kaudu (täpsustuse või uue ettepanekuga). Käsitsi mockup'i redaktorit pole.
 - **Rolli nimi lauses** (olev kääne: „Külastajana“, „Klubi liikmena“) moodustatakse lihtsa reegliga ja võib harvemate sõnade puhul olla vigane.
 
 ## Teadaolevad AI piirangud
+
+- **Päris testis täheldatud:** AI soovitas alustada maksmise loost (suurim risk), mitte pakettide vaatest. See on põhjendatud, aga kliendi prioriteet võib olla teine, seega on alati olemas „Valin ise teise“. AI lisas käibemaksu märke juba esimestesse kriteeriumidesse, nii et hilisem sama sisuga täpsustus ei muutnud midagi. Sel juhul ütleb rakendus nüüd, et muuta pole vaja, ja pakub ainult teiste lugude ettepanekuid.
+- **Ülevaatus võib anda palju leide** (testis 11), sealhulgas iga kriteeriumideta loo kohta eraldi. Neid saab ükshaaval rakendada või ignoreerida.
 
 - **Kriteeriumid võivad olla liiga üldised või kirjeldada teostust.** Näiteks „Süsteem salvestab andmed andmebaasi“ on kontrollitav, aga ei ole kasutajale nähtav. Reeglipõhine kontroll seda ei tuvasta.
 - **Reeglipõhine kontroll on lihtne.** See leiab hinnangulised sõnad loendist ja „mitu tingimust“ sidesõnade ning tegusõnalaadsete sõnade järgi. Valepositiivseid ja -negatiivseid tuleb ette, näiteks „Vormil on nimi- ja e-posti väli“ läbib kontrolli, kuigi seal on kaks elementi. Lõpliku otsuse teeb inimene.
