@@ -49,7 +49,7 @@ export function Gallery() {
     setSaving(true);
     try {
       const res = await api.exportGallery(pid);
-      notify(`Galerii salvestatud kausta: ${res.dir} (${res.count} mockup'iga lugu)`);
+      notify(`Galerii uuendatud kaustas ${res.dir}: ${res.projects} projekti, ${res.images} pilti. Lisa see git commit'iga repositooriumi.`);
     } catch (e) {
       notify((e as Error).message, "error");
     } finally {
@@ -70,8 +70,8 @@ export function Gallery() {
         <a className="btn small" href={`/api/projects/${pid}/export/gallery.html`} download title="Laadi galerii alla ühe HTML-failina">
           ⤓ HTML
         </a>
-        <button className="btn small primary" onClick={saveFolder} disabled={saving || !data?.items.length} title="Salvesta galerii projekti kausta exports/">
-          {saving ? <span className="spinner" /> : "▤"} Salvesta kausta
+        <button className="btn small primary" onClick={saveFolder} disabled={saving || !data?.items.length} title="Uuenda repositooriumi kausta galerii/ (README pildid + HTML), mida õpetaja näeb GitHubis">
+          {saving ? <span className="spinner" /> : "▤"} Uuenda galerii/ kausta
         </button>
       </div>
 

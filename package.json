@@ -10,7 +10,8 @@
     "start": "tsx server/index.ts",
     "typecheck": "tsc --noEmit -p .",
     "test": "tsx --test tests/*.test.ts",
-    "dev:mock": "concurrently -k -n server,client -c blue,green \"tsx watch --clear-screen=false server/index.ts --mock\" \"vite\""
+    "dev:mock": "concurrently -k -n server,client -c blue,green \"tsx watch --clear-screen=false server/index.ts --mock\" \"vite\"",
+    "galerii": "tsx scripts/galerii.ts"
   },
   "author": "Olavi Keerd",
   "license": "UNLICENSED",

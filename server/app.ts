@@ -6,7 +6,8 @@ import { AiService } from "./ai/service.ts";
 import { Flow } from "./flow.ts";
 import { mergeStories, splitStory, updateStory } from "./backlog.ts";
 import { toCsv, toMarkdown } from "./export.ts";
-import { galleryHtml, slugify, writeGalleryFolder, type GalleryStory } from "./gallery.ts";
+import { galleryHtml, slugify, type GalleryStory } from "./gallery.ts";
+import { exportRepoGallery } from "./gallery-export.ts";
 import {
   ChatActionSchema,
   MergeSchema,
@@ -21,7 +22,7 @@ import {
 import type { ProjectState } from "../shared/types.ts";
 
 export function createApp(repo: Repo, ai: AiService, opts: { exportDir?: string } = {}): express.Express {
-  const exportDir = opts.exportDir ?? process.env.EXPORT_DIR ?? "exports";
+  const exportDir = opts.exportDir ?? process.env.GALLERY_DIR ?? "galerii";
   const app = express();
   const flow = new Flow(repo, ai);
   const busy = new Set<string>();
@@ -209,12 +210,11 @@ export function createApp(repo: Repo, ai: AiService, opts: { exportDir?: string 
     res.type("text/html; charset=utf-8").attachment(`${slugify(project.name)}-galerii.html`).send(galleryHtml(project, items, missing));
   });
 
-  app.post("/api/projects/:id/export/gallery", (req, res) => {
-    const id = pid(req);
-    const project = repo.getProject(id);
-    const { items, missing } = gallery(id);
-    const out = writeGalleryFolder(exportDir, project, items, missing);
-    res.json({ dir: out.dir, files: out.files, count: items.length });
+  // Kõigi projektide galerii repositooriumi kausta (vaikimisi galerii/), et seda saaks GitHubis vaadata.
+  app.post("/api/projects/:id/export/gallery", async (req, res) => {
+    pid(req);
+    const out = await exportRepoGallery(repo, exportDir);
+    res.json({ dir: out.dir, count: out.mockups, projects: out.projects, images: out.images });
   });
 
   app.use("/api", (_req, res) => {

@@ -1,0 +1,187 @@
+{
+  "project": {
+    "name": "Spordiklubi (päris AI)",
+    "description": "Vastuvõtukatse päris AI-ga"
+  },
+  "exportedAt": "2026-10-01T11:08:15.551Z",
+  "stories": [
+    {
+      "code": "L6",
+      "title": "Külastajana soovin maksta valitud liikmepaketi eest veebis, et saada liikmeks kohe, ilma klubisse minemata.",
+      "status": "idea",
+      "criteria": [
+        {
+          "text": "Makse vaatel on näha valitud liikmepaketi nimi.",
+          "elementIds": [
+            "e3"
+          ]
+        },
+        {
+          "text": "Makse vaatel on näha makstav summa eurodes.",
+          "elementIds": [
+            "e5"
+          ]
+        },
+        {
+          "text": "Summa juures on märge, kas see sisaldab käibemaksu.",
+          "elementIds": [
+            "e5"
+          ]
+        },
+        {
+          "text": "Nupp „Maksa“ ei ole aktiivne enne, kui külastaja on valinud makseviisi.",
+          "elementIds": [
+            "e7",
+            "e9"
+          ]
+        },
+        {
+          "text": "Ebaõnnestunud või katkestatud makse korral kuvatakse makse vaatel veateade.",
+          "elementIds": [
+            "e10"
+          ]
+        },
+        {
+          "text": "Pärast õnnestunud makset on külastaja süsteemis märgitud valitud paketi liikmeks.",
+          "elementIds": []
+        }
+      ],
+      "mockups": [
+        {
+          "version": 1,
+          "current": true,
+          "note": "AI ettepanek",
+          "createdAt": "2026-10-01T07:56:17.762Z",
+          "spec": {
+            "title": "Liikmepaketi eest maksmine",
+            "sections": [
+              {
+                "id": "s1",
+                "heading": "",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e1",
+                    "type": "nav",
+                    "label": "Liitumise sammud",
+                    "detail": "Praegune samm: 3. Makse",
+                    "items": [
+                      "1. Pakett",
+                      "2. Andmed",
+                      "3. Makse",
+                      "4. Kinnitus"
+                    ]
+                  },
+                  {
+                    "id": "e2",
+                    "type": "heading",
+                    "label": "Makse",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s2",
+                "heading": "Tellimuse kokkuvõte",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e3",
+                    "type": "text",
+                    "label": "Pakett: Kuupakett – piiramatu",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e4",
+                    "type": "text",
+                    "label": "Kehtivus: 01.10.2026–31.10.2026",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e5",
+                    "type": "price",
+                    "label": "Tasumisele: 45,00 €",
+                    "detail": "sh km 24%",
+                    "items": []
+                  },
+                  {
+                    "id": "e6",
+                    "type": "link",
+                    "label": "Muuda paketti",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s3",
+                "heading": "Vali makseviis",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e7",
+                    "type": "list",
+                    "label": "Makseviisid",
+                    "detail": "Valik on kohustuslik",
+                    "items": [
+                      "Swedbank",
+                      "SEB",
+                      "LHV",
+                      "Luminor",
+                      "Pangakaart (Visa/Mastercard)"
+                    ]
+                  },
+                  {
+                    "id": "e8",
+                    "type": "notice",
+                    "label": "Makse tegemiseks suunatakse sind panga või makseteenuse lehele.",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s4",
+                "heading": "",
+                "layout": "row",
+                "elements": [
+                  {
+                    "id": "e11",
+                    "type": "button",
+                    "label": "Tagasi",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e9",
+                    "type": "button",
+                    "label": "Maksa 45,00 €",
+                    "detail": "Pole aktiivne, kuni makseviis on valimata",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s5",
+                "heading": "",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e10",
+                    "type": "notice",
+                    "label": "Makse ebaõnnestus või katkestati. Proovi uuesti või vali teine makseviis.",
+                    "detail": "Kuvatakse ainult ebaõnnestunud või katkestatud makse korral",
+                    "items": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

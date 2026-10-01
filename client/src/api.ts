@@ -47,6 +47,6 @@ export const api = {
   restoreMockup: (id: string, storyId: string, mockupId: string) =>
     request<ProjectState>("POST", `/api/projects/${id}/stories/${storyId}/mockups/restore`, { mockupId }),
   gallery: (id: string) => request<GalleryData>("GET", `/api/projects/${id}/gallery`),
-  exportGallery: (id: string) => request<{ dir: string; files: string[]; count: number }>("POST", `/api/projects/${id}/export/gallery`),
+  exportGallery: (id: string) => request<{ dir: string; count: number; projects: number; images: number }>("POST", `/api/projects/${id}/export/gallery`),
   undo: (id: string) => request<ProjectState & { undone: string }>("POST", `/api/projects/${id}/undo`),
 };

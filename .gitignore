@@ -4,4 +4,3 @@ data/*.db
 data/*.db-*
 .env
 *.log
-exports/

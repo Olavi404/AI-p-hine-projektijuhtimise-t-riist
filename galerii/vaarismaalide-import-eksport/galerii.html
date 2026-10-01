@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Väärismaalide import/eksport – mockup'ide galerii</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 60px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border:1px solid var(--border);border-radius:14px;padding:20px 22px;background:radial-gradient(600px 160px at 0 0,rgba(139,92,246,.18),transparent 70%),var(--panel)}
+.top h1{margin:0 0 4px;font-size:1.6rem}.muted{color:var(--muted)}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 24px}nav.toc a{font-family:var(--mono);font-size:.8rem;color:var(--accent-text);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;background:var(--surface)}nav.toc a:hover{border-color:var(--accent)}
+.card{border:1px solid var(--border);border-radius:14px;background:var(--panel);padding:18px 20px;margin-bottom:22px;scroll-margin-top:16px}
+.card header{margin-bottom:14px}.code{font-family:var(--mono);color:var(--accent-text)}.card h2{display:inline;font-size:1.05rem;margin:0 0 0 6px}
+.tags{margin-top:6px;display:flex;gap:5px;flex-wrap:wrap}.tag{font-size:.75rem;padding:1px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:start}
+h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+ol.crit{margin:0 0 12px;padding-left:20px}ol.crit li{margin:3px 0}.ids{font-family:var(--mono);font-size:.72rem;color:var(--accent-text);border:1px solid var(--border);border-radius:4px;padding:0 5px}
+details{margin-top:14px;border-top:1px dashed var(--border);padding-top:10px}summary{cursor:pointer;color:var(--accent-text)}
+.older{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:10px}figure{margin:0}figcaption{font-size:.78rem;color:var(--muted);margin-bottom:5px}
+:root{--bg:#0f1117;--panel:#12141b;--surface:#171a22;--border:#2c303b;--text:#dfe2ea;--muted:#8a8f9e;--accent:#8b5cf6;--accent-text:#c4b5fd;--mono:Consolas,ui-monospace,monospace;color-scheme:dark}
+.mockup{border:1px solid var(--border);border-radius:8px;background:#0c0e13;overflow:hidden;font-size:.85rem}
+.chrome{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--surface);border-bottom:1px solid var(--border)}.chrome i{width:7px;height:7px;border-radius:50%;background:#3a3f4d}.chrome span{margin-left:8px;font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.body{padding:10px;display:flex;flex-direction:column;gap:10px}.sec h5{margin:0 0 6px;font-size:.9rem}
+.els{display:flex;flex-direction:column;gap:6px}.sec.row .els{flex-direction:row;flex-wrap:wrap;align-items:center}.sec.grid .els{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.el{position:relative;border:1px dashed #3a3f4d;border-radius:5px;padding:6px 8px;color:#b9bdc9}.eid{position:absolute;top:-8px;right:6px;font-family:var(--mono);font-size:.65rem;color:var(--accent-text);background:#0c0e13;padding:0 3px}
+.t-nav{display:flex;justify-content:space-between;gap:10px;background:var(--surface)}.nav-items{display:flex;gap:10px;color:var(--muted)}
+.el h4{margin:0;font-size:1rem;color:#f3f4f8}.img{height:60px;display:grid;place-items:center;background:var(--surface);border-radius:4px;color:var(--muted)}
+.btn{display:inline-block;background:#3a3f4d;color:#f3f4f8;padding:3px 10px;border-radius:4px}.link{color:var(--accent-text);text-decoration:underline}
+.field{display:flex;flex-direction:column;gap:3px}.input{border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:#5d6170;min-height:24px;background:var(--bg)}
+.price{font-size:1.05rem;font-weight:600;color:#f3f4f8;display:block}.note{color:var(--muted)}.badge{background:var(--surface);padding:1px 8px;border-radius:4px}
+.table{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:2px}.table span{border:1px solid var(--border);padding:2px 4px}
+.el ul{margin:3px 0 0;padding-left:16px}.el p{margin:3px 0}
+.missing{border:1px dashed var(--border);border-radius:12px;padding:14px 18px}.missing li{margin:3px 0}
+footer{margin-top:30px;font-size:.8rem;color:var(--muted);text-align:center}
+@media(max-width:860px){.cols{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#000}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Väärismaalide import/eksport</h1><div class="muted">Mockup'ide galerii · otsin,vahendan,vahetan,müün ja ostan väärismaale
+ja viin kokku erinevaid kliente</div></div>
+    <div class="muted">5 mockup'iga lugu · eksporditud 1.10.2026, 14:08:07</div>
+  </div>
+  <nav class="toc"><a href="#L7">L7</a><a href="#L2">L2</a><a href="#L1">L1</a><a href="#L3">L3</a><a href="#L4">L4</a></nav>
+  <article class="card" id="L7">
+  <header>
+    <span class="code">L7</span>
+    <h2>Maali ostjana soovin saada broneeringu ja ettemaksu kohta kinnitus e-postiga, et olla kindel, et mu tehing on registreeritud.</h2>
+    <div class="tags"><span class="tag">Idee</span><span class="tag">v1 / 1 versiooni</span><span class="tag">S</span></div>
+  </header>
+  <div class="cols">
+    <div class="mockup"><div class="chrome"><i></i><i></i><i></i><span>Broneeringu ja ettemaksu kinnitus</span></div><div class="body"><section class="sec stack"><h5>Teade lehel pärast broneerimist</h5><div class="els"><div class="el t-nav" title="e58"><span class="eid">e58</span><strong>Peamenüü</strong><span class="nav-items"></span></div><div class="el t-notice" title="e57"><span class="eid">e57</span>✓ Kinnitus saadeti aadressile mari@näide.ee <small>– Kuvatakse pärast broneerimist või ettemaksu tasumist</small></div></div></section><section class="sec stack"><h5>Kinnituskiri (e-post)</h5><div class="els"><div class="el t-heading" title="e50"><span class="eid">e50</span><h4>Broneering on registreeritud</h4></div><div class="el t-text" title="e51"><span class="eid">e51</span>Tere, Mari! Oleme sinu broneeringu kätte saanud.</div><div class="el t-text" title="e52"><span class="eid">e52</span>Maal: Talvine maastik (Konrad Mägi)</div><div class="el t-text" title="e53"><span class="eid">e53</span>Broneeringu number: BR-2026-0142</div><div class="el t-text" title="e54"><span class="eid">e54</span>Broneering kehtib kuni: 15.10.2026</div><div class="el t-price" title="e55"><span class="eid">e55</span><span class="price">Tasutud ettemaks: 4 500 €</span><small class="note">Ainult ettemaksu kinnituskirjas</small></div><div class="el t-text" title="e56"><span class="eid">e56</span>Küsimuste korral: info@vaarismaalid.ee</div></div></section></div></div>
+    <div>
+      <h3>Vastuvõtukriteeriumid</h3>
+      <ol class="crit"><li>Pärast maali broneerimist kuvatakse lehel teade &quot;Kinnitus saadeti aadressile&quot; koos ostja e-posti aadressiga. <span class="ids">e57</span></li><li>Broneeringu kinnituskirja teemareal on tekst &quot;Broneering on registreeritud&quot;. <span class="ids">e50</span></li><li>Kinnituskirjas on broneeritud maali pealkiri. <span class="ids">e52</span></li><li>Kinnituskirjas on broneeringu number. <span class="ids">e53</span></li><li>Kinnituskirjas on kuupäev, milleni broneering kehtib. <span class="ids">e54</span></li><li>Ettemaksu kinnituskirjas on tasutud ettemaksu summa eurodes. <span class="ids">e55</span></li></ol>
+      
+      <p class="muted">Versiooni märkus: AI ettepanek</p>
+    </div>
+  </div>
+  
+</article>
+<article class="card" id="L2">
+  <header>
+    <span class="code">L2</span>
+    <h2>Maali ostjana soovin sirvida müügil olevate maalide nimekirja, et leida endale huvipakkuvaid teoseid.</h2>
+    <div class="tags"><span class="tag">Idee</span><span class="tag">v1 / 1 versiooni</span><span class="tag">M</span></div>
+  </header>
+  <div class="cols">
+    <div class="mockup"><div class="chrome"><i></i><i></i><i></i><span>Müügil olevad maalid</span></div><div class="body"><section class="sec stack"><div class="els"><div class="el t-nav" title="e1"><span class="eid">e1</span><strong>Peamenüü</strong><span class="nav-items"><span>Avaleht</span><span>Maalid</span><span>Müü maal</span><span>Vahetus</span><span>Koostöö</span><span>Kontakt</span></span></div><div class="el t-heading" title="e2"><span class="eid">e2</span><h4>Müügil olevad maalid</h4></div><div class="el t-text" title="e3"><span class="eid">e3</span>Müügil 24 maali <small>Nimekirjas olevate maalide arv</small></div></div></section><section class="sec stack"><h5>Maal 1</h5><div class="els"><div class="el t-image" title="e4"><span class="eid">e4</span><div class="img">▧ Maali foto pisipilt</div></div><div class="el t-heading" title="e5"><span class="eid">e5</span><h4>Talvine maastik</h4></div><div class="el t-text" title="e6"><span class="eid">e6</span>Konrad Mägi <small>Autor</small></div><div class="el t-price" title="e7"><span class="eid">e7</span><span class="price">45 000 €</span></div><div class="el t-link" title="e8"><span class="eid">e8</span><span class="link">Vaata lähemalt</span></div></div></section><section class="sec stack"><h5>Maal 2</h5><div class="els"><div class="el t-image" title="e10"><span class="eid">e10</span><div class="img">▧ Maali foto pisipilt</div></div><div class="el t-heading" title="e11"><span class="eid">e11</span><h4>Natüürmort lilledega</h4></div><div class="el t-text" title="e12"><span class="eid">e12</span>Johann Köler <small>Autor</small></div><div class="el t-price" title="e13"><span class="eid">e13</span><span class="price">Hind kokkuleppel</span></div><div class="el t-badge" title="e14"><span class="eid">e14</span><span class="badge">Broneeritud</span></div><div class="el t-link" title="e15"><span class="eid">e15</span><span class="link">Vaata lähemalt</span></div></div></section></div></div>
+    <div>
+      <h3>Vastuvõtukriteeriumid</h3>
+      <ol class="crit"><li>Iga maali kaardil on maali foto pisipilt. <span class="ids">e4, e10</span></li><li>Iga maali kaardil on teose pealkiri. <span class="ids">e5, e11</span></li><li>Iga maali kaardil on autori nimi. <span class="ids">e6, e12</span></li><li>Iga maalil on hind <span class="ids">e7, e13</span></li><li>Broneeritud maali kaardil on märge &quot;Broneeritud&quot;. <span class="ids">e14</span></li><li>Maali kaardil oleva lingi &quot;Vaata lähemalt&quot; klõpsamine avab selle maali detailvaate. <span class="ids">e8, e15</span></li></ol>
+      
+      <p class="muted">Versiooni märkus: AI ettepanek</p>
+    </div>
+  </div>
+  
+</article>
+<article class="card" id="L1">
+  <header>
+    <span class="code">L1</span>
+    <h2>Maali ostjana soovin lugeda avalehel vahendusteenuse tutvustust, et mõista, kuidas maali ostmine teenuse kaudu toimub.</h2>
+    <div class="tags"><span class="tag">Idee</span><span class="tag">v1 / 1 versiooni</span><span class="tag">S</span></div>
+  </header>
+  <div class="cols">
+    <div class="mockup"><div class="chrome"><i></i><i></i><i></i><span>Avaleht – vahendusteenuse tutvustus</span></div><div class="body"><section class="sec stack"><div class="els"><div class="el t-nav" title="e16"><span class="eid">e16</span><strong>Peamenüü</strong><span class="nav-items"><span>Avaleht</span><span>Müügil olevad maalid</span><span>Müü maal</span><span>Vahetus</span><span>Koostöö</span><span>Kontakt</span></span></div><div class="el t-heading" title="e17"><span class="eid">e17</span><h4>Väärismaalide vahendus</h4></div><div class="el t-text" title="e18"><span class="eid">e18</span>Otsime, vahendame, vahetame, ostame ja müüme väärismaale ning viime kokku ostjad, müüjad ja kogujad.</div><div class="el t-image" title="e19"><span class="eid">e19</span><div class="img">▧ Esiletõstetud maali foto</div></div></div></section><section class="sec stack"><h5>Kuidas maali ostmine toimub</h5><div class="els"><div class="el t-heading" title="e21"><span class="eid">e21</span><h4>Kuidas maali ostmine toimub</h4></div><div class="el t-list" title="e22"><span class="eid">e22</span><strong>Ostuprotsessi sammud</strong><ul><li>1. Vali maal müügil olevate maalide nimekirjast</li><li>2. Saada maali kohta ostusoovi päring</li><li>3. Broneeri maal</li><li>4. Tasu ettemaks veebis</li><li>5. Vahendaja korraldab tehingu ja maali üleandmise</li></ul></div><div class="el t-button" title="e23"><span class="eid">e23</span><span class="btn">Vaata müügil olevaid maale</span></div></div></section><section class="sec row"><h5>Kontakt</h5><div class="els"><div class="el t-heading" title="e24"><span class="eid">e24</span><h4>Kontakt</h4></div><div class="el t-text" title="e25"><span class="eid">e25</span>info@vaarismaalid.ee <small>kohatäide</small></div></div></section></div></div>
+    <div>
+      <h3>Vastuvõtukriteeriumid</h3>
+      <ol class="crit"><li>Avalehel on tutvustuse plokk pealkirjaga &quot;Kuidas maali ostmine toimub&quot;. <span class="ids">e21</span></li><li>Ostuprotsess on tutvustuses kirjeldatud nummerdatud sammudena. <span class="ids">e22</span></li><li>Ostuprotsessi sammude hulgas on samm maali broneerimise kohta. <span class="ids">e22</span></li><li>Ostuprotsessi sammude hulgas on samm ettemaksu tasumise kohta. <span class="ids">e22</span></li><li>Nupu &quot;Vaata müügil olevaid maale&quot; klõpsamine avab müügil olevate maalide nimekirja. <span class="ids">e23</span></li><li>Avalehel on vahendaja e-posti aadress. <span class="ids">e25</span></li></ol>
+      
+      <p class="muted">Versiooni märkus: AI ettepanek</p>
+    </div>
+  </div>
+  
+</article>
+<article class="card" id="L3">
+  <header>
+    <span class="code">L3</span>
+    <h2>Maali ostjana soovin avada maali detailvaate fotode, autori, mõõtmete ja hinnaga, et otsustada, kas maal mulle sobib.</h2>
+    <div class="tags"><span class="tag">Idee</span><span class="tag">v2 / 2 versiooni</span><span class="tag">M</span></div>
+  </header>
+  <div class="cols">
+    <div class="mockup"><div class="chrome"><i></i><i></i><i></i><span>Maali detailvaade</span></div><div class="body"><section class="sec stack"><div class="els"><div class="el t-nav" title="e26"><span class="eid">e26</span><strong>Peamenüü</strong><span class="nav-items"><span>Avaleht</span><span>Müügil olevad maalid</span><span>Kontakt</span></span></div><div class="el t-link" title="e27"><span class="eid">e27</span><span class="link">← Tagasi maalide nimekirja</span></div></div></section><section class="sec stack"><h5>Fotod</h5><div class="els"><div class="el t-image" title="e28"><span class="eid">e28</span><div class="img">▧ Maali põhifoto</div></div><div class="el t-list" title="e29"><span class="eid">e29</span><strong>Fotode pisipildid</strong><ul><li>Eestvaade</li><li>Detail</li><li>Tagakülg ja signatuur</li></ul></div></div></section><section class="sec stack"><h5>Maali andmed</h5><div class="els"><div class="el t-heading" title="e30"><span class="eid">e30</span><h4>Talvine maastik</h4></div><div class="el t-text" title="e31"><span class="eid">e31</span>Konrad Mägi <small>Autor</small></div><div class="el t-text" title="e32"><span class="eid">e32</span>Õli lõuendil, 1915 <small>Tehnika ja valmimisaasta</small></div><div class="el t-text" title="e33"><span class="eid">e33</span>Mõõtmed: 600 × 800 mm <small>laius × kõrgus</small></div><div class="el t-price" title="e34"><span class="eid">e34</span><span class="price">45 000 €</span></div><div class="el t-badge" title="e35"><span class="eid">e35</span><span class="badge">Saadaval</span></div></div></section><section class="sec row"><div class="els"><div class="el t-button" title="e36"><span class="eid">e36</span><span class="btn">Saada ostusoov</span></div><div class="el t-button" title="e37"><span class="eid">e37</span><span class="btn">Broneeri maal</span></div></div></section></div></div>
+    <div>
+      <h3>Vastuvõtukriteeriumid</h3>
+      <ol class="crit"><li>Detailvaates on maali põhifoto. <span class="ids">e28</span></li><li>Pisipildi klõpsamine fotode reas kuvab selle foto põhifoto asemel.</li><li>Detailvaates on maali pealkiri.</li><li>Detailvaates on autori nimi. <span class="ids">e31</span></li><li>Detailvaates on maali mõõtmed millimeetrites. <span class="ids">e33</span></li><li>Detailvaates on maali hind või märge &quot;Hind kokkuleppel&quot;. <span class="ids">e34</span></li><li>Lingi &quot;Tagasi maalide nimekirja&quot; klõpsamine avab müügil olevate maalide nimekirja. <span class="ids">e27</span></li></ol>
+      
+      <p class="muted">Versiooni märkus: Täpsustus: mockis mõõtmed oleks millimieetrites</p>
+    </div>
+  </div>
+  <details><summary>Varasemad versioonid (1)</summary><div class="older"><figure><figcaption>v1 · 1.10.2026, 11:21:55 · AI ettepanek</figcaption><div class="mockup"><div class="chrome"><i></i><i></i><i></i><span>Maali detailvaade</span></div><div class="body"><section class="sec stack"><div class="els"><div class="el t-nav" title="e26"><span class="eid">e26</span><strong>Peamenüü</strong><span class="nav-items"><span>Avaleht</span><span>Müügil olevad maalid</span><span>Kontakt</span></span></div><div class="el t-link" title="e27"><span class="eid">e27</span><span class="link">← Tagasi maalide nimekirja</span></div></div></section><section class="sec stack"><h5>Fotod</h5><div class="els"><div class="el t-image" title="e28"><span class="eid">e28</span><div class="img">▧ Maali põhifoto</div></div><div class="el t-list" title="e29"><span class="eid">e29</span><strong>Fotode pisipildid</strong><ul><li>Eestvaade</li><li>Detail</li><li>Tagakülg ja signatuur</li></ul></div></div></section><section class="sec stack"><h5>Maali andmed</h5><div class="els"><div class="el t-heading" title="e30"><span class="eid">e30</span><h4>Talvine maastik</h4></div><div class="el t-text" title="e31"><span class="eid">e31</span>Konrad Mägi <small>Autor</small></div><div class="el t-text" title="e32"><span class="eid">e32</span>Õli lõuendil, 1915 <small>Tehnika ja valmimisaasta</small></div><div class="el t-text" title="e33"><span class="eid">e33</span>Mõõtmed: 60 × 80 cm <small>laius × kõrgus</small></div><div class="el t-price" title="e34"><span class="eid">e34</span><span class="price">45 000 €</span></div><div class="el t-badge" title="e35"><span class="eid">e35</span><span class="badge">Saadaval</span></div></div></section><section class="sec row"><div class="els"><div class="el t-button" title="e36"><span class="eid">e36</span><span class="btn">Saada ostusoov</span></div><div class="el t-button" title="e37"><span class="eid">e37</span><span class="btn">Broneeri maal</span></div></div></section></div></div></figure></div></details>
+</article>
+<article class="card" id="L4">
+  <header>
+    <span class="code">L4</span>
+    <h2>Maali ostjana soovin saata valitud maali kohta ostusoovi päringut, et saada lisainfot või alustada hinnaläbirääkimist.</h2>
+    <div class="tags"><span class="tag">Idee</span><span class="tag">v1 / 1 versiooni</span><span class="tag">M</span></div>
+  </header>
+  <div class="cols">
+    <div class="mockup"><div class="chrome"><i></i><i></i><i></i><span>Ostusoovi päring</span></div><div class="body"><section class="sec stack"><div class="els"><div class="el t-nav" title="e38"><span class="eid">e38</span><strong>Peamenüü</strong><span class="nav-items"><span>Avaleht</span><span>Müügil olevad maalid</span><span>Müü maal</span><span>Vahetus</span><span>Kontakt</span></span></div><div class="el t-link" title="e39"><span class="eid">e39</span><span class="link">← Tagasi maali juurde</span></div><div class="el t-heading" title="e40"><span class="eid">e40</span><h4>Saada ostusoov</h4></div></div></section><section class="sec row"><h5>Valitud maal</h5><div class="els"><div class="el t-image" title="e42"><span class="eid">e42</span><div class="img">▧ Maali foto pisipilt</div></div><div class="el t-heading" title="e41"><span class="eid">e41</span><h4>Talvine maastik</h4></div><div class="el t-text" title="e43"><span class="eid">e43</span>Konrad Mägi · 45 000 €</div></div></section><section class="sec stack"><h5>Sinu andmed ja sõnum</h5><div class="els"><div class="el t-input" title="e44"><span class="eid">e44</span><span class="field">Nimi<span class="input">kohustuslik</span></span></div><div class="el t-input" title="e45"><span class="eid">e45</span><span class="field">E-post<span class="input">kohustuslik</span></span></div><div class="el t-input" title="e46"><span class="eid">e46</span><span class="field">Telefon<span class="input">valikuline</span></span></div><div class="el t-input" title="e47"><span class="eid">e47</span><span class="field">Sõnum<span class="input">Kirjuta oma küsimus või hinnapakkumine</span></span></div><div class="el t-button" title="e48"><span class="eid">e48</span><span class="btn">Saada päring</span></div><div class="el t-notice" title="e49"><span class="eid">e49</span>✓ Päring on saadetud <small>– kuvatakse pärast saatmist</small></div></div></section></div></div>
+    <div>
+      <h3>Vastuvõtukriteeriumid</h3>
+      <ol class="crit"><li>Ostusoovi vormi kohal on valitud maali pealkiri. <span class="ids">e41</span></li><li>Vormil on kohustuslik väli &quot;Nimi&quot;. <span class="ids">e44</span></li><li>Vormil on kohustuslik väli &quot;E-post&quot;. <span class="ids">e45</span></li><li>Vormil on tekstiväli &quot;Sõnum&quot;. <span class="ids">e47</span></li><li>Tühja välja &quot;E-post&quot; korral kuvab nupu &quot;Saada päring&quot; klõpsamine veateate &quot;Sisesta e-posti aadress&quot;. <span class="ids">e45, e48</span></li><li>Pärast päringu saatmist kuvatakse teade &quot;Päring on saadetud&quot;. <span class="ids">e49</span></li></ol>
+      
+      <p class="muted">Versiooni märkus: AI ettepanek</p>
+    </div>
+  </div>
+  
+</article>
+  <div class="missing"><h3>Vaadet puudutavad lood ilma mockup'ita (4)</h3><ul><li><span class="code">L5</span> Maali ostjana soovin broneerida valitud maal, et keegi teine ei ostaks seda enne minu otsust ära.</li><li><span class="code">L6</span> Maali ostjana soovin tasuda broneeritud maali eest veebis ettemaks, et kinnitada oma ostusoov siduvalt.</li><li><span class="code">L8</span> Administraatorina soovin lisada lehele maal koos andmete ja fotodega, et ostjad näeksid müügil olevaid teoseid.</li><li><span class="code">L9</span> Administraatorina soovin näha sissetulnud päringuid ja broneeringuid ühes nimekirjas, et vastata klientidele õigel ajal.</li></ul></div>
+  <footer>Loodud rakendusega KickOff AI</footer>
+</div>
+</body>
+</html>

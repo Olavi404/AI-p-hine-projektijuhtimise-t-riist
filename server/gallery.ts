@@ -8,6 +8,21 @@ import { storyTitle } from "../shared/quality.ts";
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
+/** Mockup'i stiilid (kasutatakse HTML-galeriis ja piltide tegemisel). */
+export const MOCKUP_CSS = String.raw`:root{--bg:#0f1117;--panel:#12141b;--surface:#171a22;--border:#2c303b;--text:#dfe2ea;--muted:#8a8f9e;--accent:#8b5cf6;--accent-text:#c4b5fd;--mono:Consolas,ui-monospace,monospace;color-scheme:dark}
+.mockup{border:1px solid var(--border);border-radius:8px;background:#0c0e13;overflow:hidden;font-size:.85rem}
+.chrome{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--surface);border-bottom:1px solid var(--border)}.chrome i{width:7px;height:7px;border-radius:50%;background:#3a3f4d}.chrome span{margin-left:8px;font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.body{padding:10px;display:flex;flex-direction:column;gap:10px}.sec h5{margin:0 0 6px;font-size:.9rem}
+.els{display:flex;flex-direction:column;gap:6px}.sec.row .els{flex-direction:row;flex-wrap:wrap;align-items:center}.sec.grid .els{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.el{position:relative;border:1px dashed #3a3f4d;border-radius:5px;padding:6px 8px;color:#b9bdc9}.eid{position:absolute;top:-8px;right:6px;font-family:var(--mono);font-size:.65rem;color:var(--accent-text);background:#0c0e13;padding:0 3px}
+.t-nav{display:flex;justify-content:space-between;gap:10px;background:var(--surface)}.nav-items{display:flex;gap:10px;color:var(--muted)}
+.el h4{margin:0;font-size:1rem;color:#f3f4f8}.img{height:60px;display:grid;place-items:center;background:var(--surface);border-radius:4px;color:var(--muted)}
+.btn{display:inline-block;background:#3a3f4d;color:#f3f4f8;padding:3px 10px;border-radius:4px}.link{color:var(--accent-text);text-decoration:underline}
+.field{display:flex;flex-direction:column;gap:3px}.input{border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:#5d6170;min-height:24px;background:var(--bg)}
+.price{font-size:1.05rem;font-weight:600;color:#f3f4f8;display:block}.note{color:var(--muted)}.badge{background:var(--surface);padding:1px 8px;border-radius:4px}
+.table{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:2px}.table span{border:1px solid var(--border);padding:2px 4px}
+.el ul{margin:3px 0 0;padding-left:16px}.el p{margin:3px 0}`;
+
 export interface GalleryStory {
   story: Story;
   versions: MockupVersion[];
@@ -101,7 +116,6 @@ export function galleryHtml(project: Project, items: GalleryStory[], missing: St
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(project.name)} – mockup'ide galerii</title>
 <style>
-:root{--bg:#0f1117;--panel:#12141b;--surface:#171a22;--border:#2c303b;--text:#dfe2ea;--muted:#8a8f9e;--accent:#8b5cf6;--accent-text:#c4b5fd;--mono:Consolas,ui-monospace,monospace;color-scheme:dark}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,sans-serif}
 .wrap{max-width:1180px;margin:0 auto;padding:32px 20px 60px}
 .top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border:1px solid var(--border);border-radius:14px;padding:20px 22px;background:radial-gradient(600px 160px at 0 0,rgba(139,92,246,.18),transparent 70%),var(--panel)}
@@ -115,18 +129,7 @@ h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:
 ol.crit{margin:0 0 12px;padding-left:20px}ol.crit li{margin:3px 0}.ids{font-family:var(--mono);font-size:.72rem;color:var(--accent-text);border:1px solid var(--border);border-radius:4px;padding:0 5px}
 details{margin-top:14px;border-top:1px dashed var(--border);padding-top:10px}summary{cursor:pointer;color:var(--accent-text)}
 .older{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:10px}figure{margin:0}figcaption{font-size:.78rem;color:var(--muted);margin-bottom:5px}
-.mockup{border:1px solid var(--border);border-radius:8px;background:#0c0e13;overflow:hidden;font-size:.85rem}
-.chrome{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--surface);border-bottom:1px solid var(--border)}.chrome i{width:7px;height:7px;border-radius:50%;background:#3a3f4d}.chrome span{margin-left:8px;font-family:var(--mono);font-size:.75rem;color:var(--muted)}
-.body{padding:10px;display:flex;flex-direction:column;gap:10px}.sec h5{margin:0 0 6px;font-size:.9rem}
-.els{display:flex;flex-direction:column;gap:6px}.sec.row .els{flex-direction:row;flex-wrap:wrap;align-items:center}.sec.grid .els{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
-.el{position:relative;border:1px dashed #3a3f4d;border-radius:5px;padding:6px 8px;color:#b9bdc9}.eid{position:absolute;top:-8px;right:6px;font-family:var(--mono);font-size:.65rem;color:var(--accent-text);background:#0c0e13;padding:0 3px}
-.t-nav{display:flex;justify-content:space-between;gap:10px;background:var(--surface)}.nav-items{display:flex;gap:10px;color:var(--muted)}
-.el h4{margin:0;font-size:1rem;color:#f3f4f8}.img{height:60px;display:grid;place-items:center;background:var(--surface);border-radius:4px;color:var(--muted)}
-.btn{display:inline-block;background:#3a3f4d;color:#f3f4f8;padding:3px 10px;border-radius:4px}.link{color:var(--accent-text);text-decoration:underline}
-.field{display:flex;flex-direction:column;gap:3px}.input{border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:#5d6170;min-height:24px;background:var(--bg)}
-.price{font-size:1.05rem;font-weight:600;color:#f3f4f8;display:block}.note{color:var(--muted)}.badge{background:var(--surface);padding:1px 8px;border-radius:4px}
-.table{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:2px}.table span{border:1px solid var(--border);padding:2px 4px}
-.el ul{margin:3px 0 0;padding-left:16px}.el p{margin:3px 0}
+${MOCKUP_CSS}
 .missing{border:1px dashed var(--border);border-radius:12px;padding:14px 18px}.missing li{margin:3px 0}
 footer{margin-top:30px;font-size:.8rem;color:var(--muted);text-align:center}
 @media(max-width:860px){.cols{grid-template-columns:1fr}}

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spordiklubi (päris AI) – mockup'ide galerii</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 60px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;border:1px solid var(--border);border-radius:14px;padding:20px 22px;background:radial-gradient(600px 160px at 0 0,rgba(139,92,246,.18),transparent 70%),var(--panel)}
+.top h1{margin:0 0 4px;font-size:1.6rem}.muted{color:var(--muted)}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 24px}nav.toc a{font-family:var(--mono);font-size:.8rem;color:var(--accent-text);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;background:var(--surface)}nav.toc a:hover{border-color:var(--accent)}
+.card{border:1px solid var(--border);border-radius:14px;background:var(--panel);padding:18px 20px;margin-bottom:22px;scroll-margin-top:16px}
+.card header{margin-bottom:14px}.code{font-family:var(--mono);color:var(--accent-text)}.card h2{display:inline;font-size:1.05rem;margin:0 0 0 6px}
+.tags{margin-top:6px;display:flex;gap:5px;flex-wrap:wrap}.tag{font-size:.75rem;padding:1px 8px;border-radius:4px;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:20px;align-items:start}
+h3{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+ol.crit{margin:0 0 12px;padding-left:20px}ol.crit li{margin:3px 0}.ids{font-family:var(--mono);font-size:.72rem;color:var(--accent-text);border:1px solid var(--border);border-radius:4px;padding:0 5px}
+details{margin-top:14px;border-top:1px dashed var(--border);padding-top:10px}summary{cursor:pointer;color:var(--accent-text)}
+.older{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:10px}figure{margin:0}figcaption{font-size:.78rem;color:var(--muted);margin-bottom:5px}
+:root{--bg:#0f1117;--panel:#12141b;--surface:#171a22;--border:#2c303b;--text:#dfe2ea;--muted:#8a8f9e;--accent:#8b5cf6;--accent-text:#c4b5fd;--mono:Consolas,ui-monospace,monospace;color-scheme:dark}
+.mockup{border:1px solid var(--border);border-radius:8px;background:#0c0e13;overflow:hidden;font-size:.85rem}
+.chrome{display:flex;align-items:center;gap:5px;padding:6px 10px;background:var(--surface);border-bottom:1px solid var(--border)}.chrome i{width:7px;height:7px;border-radius:50%;background:#3a3f4d}.chrome span{margin-left:8px;font-family:var(--mono);font-size:.75rem;color:var(--muted)}
+.body{padding:10px;display:flex;flex-direction:column;gap:10px}.sec h5{margin:0 0 6px;font-size:.9rem}
+.els{display:flex;flex-direction:column;gap:6px}.sec.row .els{flex-direction:row;flex-wrap:wrap;align-items:center}.sec.grid .els{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+.el{position:relative;border:1px dashed #3a3f4d;border-radius:5px;padding:6px 8px;color:#b9bdc9}.eid{position:absolute;top:-8px;right:6px;font-family:var(--mono);font-size:.65rem;color:var(--accent-text);background:#0c0e13;padding:0 3px}
+.t-nav{display:flex;justify-content:space-between;gap:10px;background:var(--surface)}.nav-items{display:flex;gap:10px;color:var(--muted)}
+.el h4{margin:0;font-size:1rem;color:#f3f4f8}.img{height:60px;display:grid;place-items:center;background:var(--surface);border-radius:4px;color:var(--muted)}
+.btn{display:inline-block;background:#3a3f4d;color:#f3f4f8;padding:3px 10px;border-radius:4px}.link{color:var(--accent-text);text-decoration:underline}
+.field{display:flex;flex-direction:column;gap:3px}.input{border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:#5d6170;min-height:24px;background:var(--bg)}
+.price{font-size:1.05rem;font-weight:600;color:#f3f4f8;display:block}.note{color:var(--muted)}.badge{background:var(--surface);padding:1px 8px;border-radius:4px}
+.table{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:2px}.table span{border:1px solid var(--border);padding:2px 4px}
+.el ul{margin:3px 0 0;padding-left:16px}.el p{margin:3px 0}
+.missing{border:1px dashed var(--border);border-radius:12px;padding:14px 18px}.missing li{margin:3px 0}
+footer{margin-top:30px;font-size:.8rem;color:var(--muted);text-align:center}
+@media(max-width:860px){.cols{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#000}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Spordiklubi (päris AI)</h1><div class="muted">Mockup'ide galerii · Vastuvõtukatse päris AI-ga</div></div>
+    <div class="muted">1 mockup'iga lugu · eksporditud 1.10.2026, 14:08:15</div>
+  </div>
+  <nav class="toc"><a href="#L6">L6</a></nav>
+  <article class="card" id="L6">
+  <header>
+    <span class="code">L6</span>
+    <h2>Külastajana soovin maksta valitud liikmepaketi eest veebis, et saada liikmeks kohe, ilma klubisse minemata.</h2>
+    <div class="tags"><span class="tag">Idee</span><span class="tag">v1 / 1 versiooni</span><span class="tag">L</span></div>
+  </header>
+  <div class="cols">
+    <div class="mockup"><div class="chrome"><i></i><i></i><i></i><span>Liikmepaketi eest maksmine</span></div><div class="body"><section class="sec stack"><div class="els"><div class="el t-nav" title="e1"><span class="eid">e1</span><strong>Liitumise sammud</strong><span class="nav-items"><span>1. Pakett</span><span>2. Andmed</span><span>3. Makse</span><span>4. Kinnitus</span></span></div><div class="el t-heading" title="e2"><span class="eid">e2</span><h4>Makse</h4></div></div></section><section class="sec stack"><h5>Tellimuse kokkuvõte</h5><div class="els"><div class="el t-text" title="e3"><span class="eid">e3</span>Pakett: Kuupakett – piiramatu</div><div class="el t-text" title="e4"><span class="eid">e4</span>Kehtivus: 01.10.2026–31.10.2026</div><div class="el t-price" title="e5"><span class="eid">e5</span><span class="price">Tasumisele: 45,00 €</span><small class="note">sh km 24%</small></div><div class="el t-link" title="e6"><span class="eid">e6</span><span class="link">Muuda paketti</span></div></div></section><section class="sec stack"><h5>Vali makseviis</h5><div class="els"><div class="el t-list" title="e7"><span class="eid">e7</span><strong>Makseviisid</strong><ul><li>Swedbank</li><li>SEB</li><li>LHV</li><li>Luminor</li><li>Pangakaart (Visa/Mastercard)</li></ul></div><div class="el t-notice" title="e8"><span class="eid">e8</span>✓ Makse tegemiseks suunatakse sind panga või makseteenuse lehele.</div></div></section><section class="sec row"><div class="els"><div class="el t-button" title="e11"><span class="eid">e11</span><span class="btn">Tagasi</span></div><div class="el t-button" title="e9"><span class="eid">e9</span><span class="btn">Maksa 45,00 €</span></div></div></section><section class="sec stack"><div class="els"><div class="el t-notice" title="e10"><span class="eid">e10</span>✓ Makse ebaõnnestus või katkestati. Proovi uuesti või vali teine makseviis. <small>– Kuvatakse ainult ebaõnnestunud või katkestatud makse korral</small></div></div></section></div></div>
+    <div>
+      <h3>Vastuvõtukriteeriumid</h3>
+      <ol class="crit"><li>Makse vaatel on näha valitud liikmepaketi nimi. <span class="ids">e3</span></li><li>Makse vaatel on näha makstav summa eurodes. <span class="ids">e5</span></li><li>Summa juures on märge, kas see sisaldab käibemaksu. <span class="ids">e5</span></li><li>Nupp „Maksa“ ei ole aktiivne enne, kui külastaja on valinud makseviisi. <span class="ids">e7, e9</span></li><li>Ebaõnnestunud või katkestatud makse korral kuvatakse makse vaatel veateade. <span class="ids">e10</span></li><li>Pärast õnnestunud makset on külastaja süsteemis märgitud valitud paketi liikmeks.</li></ol>
+      
+      <p class="muted">Versiooni märkus: AI ettepanek</p>
+    </div>
+  </div>
+  
+</article>
+  <div class="missing"><h3>Vaadet puudutavad lood ilma mockup'ita (7)</h3><ul><li><span class="code">L1</span> Külastajana soovin näha treeningute kirjeldusi, et otsustada, millised treeningud mind huvitavad.</li><li><span class="code">L2</span> Külastajana soovin näha treeningute tunniplaani, et teada, kas treeningute ajad sobivad mulle.</li><li><span class="code">L3</span> Külastajana soovin näha liikmepakette ja nende hindu, et valida endale sobiv pakett.</li><li><span class="code">L4</span> Külastajana soovin valida liikmepakett ja alustada liikmeks astumist, et liituda just mulle sobiva paketiga.</li><li><span class="code">L5</span> Külastajana soovin sisestada liitumiseks oma isikuandmed, et klubi saaks mind liikmena registreerida.</li><li><span class="code">L7</span> Külastajana soovin saada pärast makset liikmeks astumise kinnitust, et olla kindel, et liitumine ja makse õnnestusid.</li><li><span class="code">L8</span> Klubi liikmena soovin broneerida treeninguid ja tühistada broneeringuid ning maksta trahve, et hallata oma treeninguid.</li></ul></div>
+  <footer>Loodud rakendusega KickOff AI</footer>
+</div>
+</body>
+</html>

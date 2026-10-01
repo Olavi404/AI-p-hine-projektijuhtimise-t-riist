@@ -1,0 +1,959 @@
+{
+  "project": {
+    "name": "Väärismaalide import/eksport",
+    "description": "otsin,vahendan,vahetan,müün ja ostan väärismaale\nja viin kokku erinevaid kliente"
+  },
+  "exportedAt": "2026-10-01T11:08:07.298Z",
+  "stories": [
+    {
+      "code": "L7",
+      "title": "Maali ostjana soovin saada broneeringu ja ettemaksu kohta kinnitus e-postiga, et olla kindel, et mu tehing on registreeritud.",
+      "status": "idea",
+      "criteria": [
+        {
+          "text": "Pärast maali broneerimist kuvatakse lehel teade \"Kinnitus saadeti aadressile\" koos ostja e-posti aadressiga.",
+          "elementIds": [
+            "e57"
+          ]
+        },
+        {
+          "text": "Broneeringu kinnituskirja teemareal on tekst \"Broneering on registreeritud\".",
+          "elementIds": [
+            "e50"
+          ]
+        },
+        {
+          "text": "Kinnituskirjas on broneeritud maali pealkiri.",
+          "elementIds": [
+            "e52"
+          ]
+        },
+        {
+          "text": "Kinnituskirjas on broneeringu number.",
+          "elementIds": [
+            "e53"
+          ]
+        },
+        {
+          "text": "Kinnituskirjas on kuupäev, milleni broneering kehtib.",
+          "elementIds": [
+            "e54"
+          ]
+        },
+        {
+          "text": "Ettemaksu kinnituskirjas on tasutud ettemaksu summa eurodes.",
+          "elementIds": [
+            "e55"
+          ]
+        }
+      ],
+      "mockups": [
+        {
+          "version": 1,
+          "current": true,
+          "note": "AI ettepanek",
+          "createdAt": "2026-10-01T08:26:10.596Z",
+          "spec": {
+            "title": "Broneeringu ja ettemaksu kinnitus",
+            "sections": [
+              {
+                "id": "s1",
+                "heading": "Teade lehel pärast broneerimist",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e58",
+                    "type": "nav",
+                    "label": "Peamenüü",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e57",
+                    "type": "notice",
+                    "label": "Kinnitus saadeti aadressile mari@näide.ee",
+                    "detail": "Kuvatakse pärast broneerimist või ettemaksu tasumist",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s2",
+                "heading": "Kinnituskiri (e-post)",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e50",
+                    "type": "heading",
+                    "label": "Broneering on registreeritud",
+                    "detail": "E-kirja teemarida",
+                    "items": []
+                  },
+                  {
+                    "id": "e51",
+                    "type": "text",
+                    "label": "Tere, Mari! Oleme sinu broneeringu kätte saanud.",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e52",
+                    "type": "text",
+                    "label": "Maal: Talvine maastik (Konrad Mägi)",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e53",
+                    "type": "text",
+                    "label": "Broneeringu number: BR-2026-0142",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e54",
+                    "type": "text",
+                    "label": "Broneering kehtib kuni: 15.10.2026",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e55",
+                    "type": "price",
+                    "label": "Tasutud ettemaks: 4 500 €",
+                    "detail": "Ainult ettemaksu kinnituskirjas",
+                    "items": []
+                  },
+                  {
+                    "id": "e56",
+                    "type": "text",
+                    "label": "Küsimuste korral: info@vaarismaalid.ee",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "L2",
+      "title": "Maali ostjana soovin sirvida müügil olevate maalide nimekirja, et leida endale huvipakkuvaid teoseid.",
+      "status": "idea",
+      "criteria": [
+        {
+          "text": "Iga maali kaardil on maali foto pisipilt.",
+          "elementIds": [
+            "e4",
+            "e10"
+          ]
+        },
+        {
+          "text": "Iga maali kaardil on teose pealkiri.",
+          "elementIds": [
+            "e5",
+            "e11"
+          ]
+        },
+        {
+          "text": "Iga maali kaardil on autori nimi.",
+          "elementIds": [
+            "e6",
+            "e12"
+          ]
+        },
+        {
+          "text": "Iga maalil on hind",
+          "elementIds": [
+            "e7",
+            "e13"
+          ]
+        },
+        {
+          "text": "Broneeritud maali kaardil on märge \"Broneeritud\".",
+          "elementIds": [
+            "e14"
+          ]
+        },
+        {
+          "text": "Maali kaardil oleva lingi \"Vaata lähemalt\" klõpsamine avab selle maali detailvaate.",
+          "elementIds": [
+            "e8",
+            "e15"
+          ]
+        }
+      ],
+      "mockups": [
+        {
+          "version": 1,
+          "current": true,
+          "note": "AI ettepanek",
+          "createdAt": "2026-10-01T08:17:44.577Z",
+          "spec": {
+            "title": "Müügil olevad maalid",
+            "sections": [
+              {
+                "id": "s1",
+                "heading": "",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e1",
+                    "type": "nav",
+                    "label": "Peamenüü",
+                    "detail": "",
+                    "items": [
+                      "Avaleht",
+                      "Maalid",
+                      "Müü maal",
+                      "Vahetus",
+                      "Koostöö",
+                      "Kontakt"
+                    ]
+                  },
+                  {
+                    "id": "e2",
+                    "type": "heading",
+                    "label": "Müügil olevad maalid",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e3",
+                    "type": "text",
+                    "label": "Müügil 24 maali",
+                    "detail": "Nimekirjas olevate maalide arv",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s2",
+                "heading": "Maal 1",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e4",
+                    "type": "image",
+                    "label": "Maali foto pisipilt",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e5",
+                    "type": "heading",
+                    "label": "Talvine maastik",
+                    "detail": "Teose pealkiri",
+                    "items": []
+                  },
+                  {
+                    "id": "e6",
+                    "type": "text",
+                    "label": "Konrad Mägi",
+                    "detail": "Autor",
+                    "items": []
+                  },
+                  {
+                    "id": "e7",
+                    "type": "price",
+                    "label": "45 000 €",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e8",
+                    "type": "link",
+                    "label": "Vaata lähemalt",
+                    "detail": "Avab maali detailvaate",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s3",
+                "heading": "Maal 2",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e10",
+                    "type": "image",
+                    "label": "Maali foto pisipilt",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e11",
+                    "type": "heading",
+                    "label": "Natüürmort lilledega",
+                    "detail": "Teose pealkiri",
+                    "items": []
+                  },
+                  {
+                    "id": "e12",
+                    "type": "text",
+                    "label": "Johann Köler",
+                    "detail": "Autor",
+                    "items": []
+                  },
+                  {
+                    "id": "e13",
+                    "type": "price",
+                    "label": "Hind kokkuleppel",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e14",
+                    "type": "badge",
+                    "label": "Broneeritud",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e15",
+                    "type": "link",
+                    "label": "Vaata lähemalt",
+                    "detail": "Avab maali detailvaate",
+                    "items": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "L1",
+      "title": "Maali ostjana soovin lugeda avalehel vahendusteenuse tutvustust, et mõista, kuidas maali ostmine teenuse kaudu toimub.",
+      "status": "idea",
+      "criteria": [
+        {
+          "text": "Avalehel on tutvustuse plokk pealkirjaga \"Kuidas maali ostmine toimub\".",
+          "elementIds": [
+            "e21"
+          ]
+        },
+        {
+          "text": "Ostuprotsess on tutvustuses kirjeldatud nummerdatud sammudena.",
+          "elementIds": [
+            "e22"
+          ]
+        },
+        {
+          "text": "Ostuprotsessi sammude hulgas on samm maali broneerimise kohta.",
+          "elementIds": [
+            "e22"
+          ]
+        },
+        {
+          "text": "Ostuprotsessi sammude hulgas on samm ettemaksu tasumise kohta.",
+          "elementIds": [
+            "e22"
+          ]
+        },
+        {
+          "text": "Nupu \"Vaata müügil olevaid maale\" klõpsamine avab müügil olevate maalide nimekirja.",
+          "elementIds": [
+            "e23"
+          ]
+        },
+        {
+          "text": "Avalehel on vahendaja e-posti aadress.",
+          "elementIds": [
+            "e25"
+          ]
+        }
+      ],
+      "mockups": [
+        {
+          "version": 1,
+          "current": true,
+          "note": "AI ettepanek",
+          "createdAt": "2026-10-01T08:20:01.483Z",
+          "spec": {
+            "title": "Avaleht – vahendusteenuse tutvustus",
+            "sections": [
+              {
+                "id": "s1",
+                "heading": "",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e16",
+                    "type": "nav",
+                    "label": "Peamenüü",
+                    "detail": "",
+                    "items": [
+                      "Avaleht",
+                      "Müügil olevad maalid",
+                      "Müü maal",
+                      "Vahetus",
+                      "Koostöö",
+                      "Kontakt"
+                    ]
+                  },
+                  {
+                    "id": "e17",
+                    "type": "heading",
+                    "label": "Väärismaalide vahendus",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e18",
+                    "type": "text",
+                    "label": "Otsime, vahendame, vahetame, ostame ja müüme väärismaale ning viime kokku ostjad, müüjad ja kogujad.",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e19",
+                    "type": "image",
+                    "label": "Esiletõstetud maali foto",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s2",
+                "heading": "Kuidas maali ostmine toimub",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e21",
+                    "type": "heading",
+                    "label": "Kuidas maali ostmine toimub",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e22",
+                    "type": "list",
+                    "label": "Ostuprotsessi sammud",
+                    "detail": "nummerdatud loend",
+                    "items": [
+                      "1. Vali maal müügil olevate maalide nimekirjast",
+                      "2. Saada maali kohta ostusoovi päring",
+                      "3. Broneeri maal",
+                      "4. Tasu ettemaks veebis",
+                      "5. Vahendaja korraldab tehingu ja maali üleandmise"
+                    ]
+                  },
+                  {
+                    "id": "e23",
+                    "type": "button",
+                    "label": "Vaata müügil olevaid maale",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s3",
+                "heading": "Kontakt",
+                "layout": "row",
+                "elements": [
+                  {
+                    "id": "e24",
+                    "type": "heading",
+                    "label": "Kontakt",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e25",
+                    "type": "text",
+                    "label": "info@vaarismaalid.ee",
+                    "detail": "kohatäide",
+                    "items": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "L3",
+      "title": "Maali ostjana soovin avada maali detailvaate fotode, autori, mõõtmete ja hinnaga, et otsustada, kas maal mulle sobib.",
+      "status": "idea",
+      "criteria": [
+        {
+          "text": "Detailvaates on maali põhifoto.",
+          "elementIds": [
+            "e28"
+          ]
+        },
+        {
+          "text": "Pisipildi klõpsamine fotode reas kuvab selle foto põhifoto asemel.",
+          "elementIds": []
+        },
+        {
+          "text": "Detailvaates on maali pealkiri.",
+          "elementIds": []
+        },
+        {
+          "text": "Detailvaates on autori nimi.",
+          "elementIds": [
+            "e31"
+          ]
+        },
+        {
+          "text": "Detailvaates on maali mõõtmed millimeetrites.",
+          "elementIds": [
+            "e33"
+          ]
+        },
+        {
+          "text": "Detailvaates on maali hind või märge \"Hind kokkuleppel\".",
+          "elementIds": [
+            "e34"
+          ]
+        },
+        {
+          "text": "Lingi \"Tagasi maalide nimekirja\" klõpsamine avab müügil olevate maalide nimekirja.",
+          "elementIds": [
+            "e27"
+          ]
+        }
+      ],
+      "mockups": [
+        {
+          "version": 2,
+          "current": true,
+          "note": "Täpsustus: mockis mõõtmed oleks millimieetrites",
+          "createdAt": "2026-10-01T08:28:05.470Z",
+          "spec": {
+            "title": "Maali detailvaade",
+            "sections": [
+              {
+                "id": "s1",
+                "heading": "",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e26",
+                    "type": "nav",
+                    "label": "Peamenüü",
+                    "detail": "",
+                    "items": [
+                      "Avaleht",
+                      "Müügil olevad maalid",
+                      "Kontakt"
+                    ]
+                  },
+                  {
+                    "id": "e27",
+                    "type": "link",
+                    "label": "← Tagasi maalide nimekirja",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s2",
+                "heading": "Fotod",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e28",
+                    "type": "image",
+                    "label": "Maali põhifoto",
+                    "detail": "Suur foto valitud vaatest",
+                    "items": []
+                  },
+                  {
+                    "id": "e29",
+                    "type": "list",
+                    "label": "Fotode pisipildid",
+                    "detail": "Klõps avab foto suurelt",
+                    "items": [
+                      "Eestvaade",
+                      "Detail",
+                      "Tagakülg ja signatuur"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "s3",
+                "heading": "Maali andmed",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e30",
+                    "type": "heading",
+                    "label": "Talvine maastik",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e31",
+                    "type": "text",
+                    "label": "Konrad Mägi",
+                    "detail": "Autor",
+                    "items": []
+                  },
+                  {
+                    "id": "e32",
+                    "type": "text",
+                    "label": "Õli lõuendil, 1915",
+                    "detail": "Tehnika ja valmimisaasta",
+                    "items": []
+                  },
+                  {
+                    "id": "e33",
+                    "type": "text",
+                    "label": "Mõõtmed: 600 × 800 mm",
+                    "detail": "laius × kõrgus",
+                    "items": []
+                  },
+                  {
+                    "id": "e34",
+                    "type": "price",
+                    "label": "45 000 €",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e35",
+                    "type": "badge",
+                    "label": "Saadaval",
+                    "detail": "Broneeritud maalil \"Broneeritud\"",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s4",
+                "heading": "",
+                "layout": "row",
+                "elements": [
+                  {
+                    "id": "e36",
+                    "type": "button",
+                    "label": "Saada ostusoov",
+                    "detail": "Lugu L4",
+                    "items": []
+                  },
+                  {
+                    "id": "e37",
+                    "type": "button",
+                    "label": "Broneeri maal",
+                    "detail": "Lugu L5",
+                    "items": []
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "version": 1,
+          "current": false,
+          "note": "AI ettepanek",
+          "createdAt": "2026-10-01T08:21:55.290Z",
+          "spec": {
+            "title": "Maali detailvaade",
+            "sections": [
+              {
+                "id": "s1",
+                "heading": "",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e26",
+                    "type": "nav",
+                    "label": "Peamenüü",
+                    "detail": "",
+                    "items": [
+                      "Avaleht",
+                      "Müügil olevad maalid",
+                      "Kontakt"
+                    ]
+                  },
+                  {
+                    "id": "e27",
+                    "type": "link",
+                    "label": "← Tagasi maalide nimekirja",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s2",
+                "heading": "Fotod",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e28",
+                    "type": "image",
+                    "label": "Maali põhifoto",
+                    "detail": "Suur foto valitud vaatest",
+                    "items": []
+                  },
+                  {
+                    "id": "e29",
+                    "type": "list",
+                    "label": "Fotode pisipildid",
+                    "detail": "Klõps avab foto suurelt",
+                    "items": [
+                      "Eestvaade",
+                      "Detail",
+                      "Tagakülg ja signatuur"
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "s3",
+                "heading": "Maali andmed",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e30",
+                    "type": "heading",
+                    "label": "Talvine maastik",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e31",
+                    "type": "text",
+                    "label": "Konrad Mägi",
+                    "detail": "Autor",
+                    "items": []
+                  },
+                  {
+                    "id": "e32",
+                    "type": "text",
+                    "label": "Õli lõuendil, 1915",
+                    "detail": "Tehnika ja valmimisaasta",
+                    "items": []
+                  },
+                  {
+                    "id": "e33",
+                    "type": "text",
+                    "label": "Mõõtmed: 60 × 80 cm",
+                    "detail": "laius × kõrgus",
+                    "items": []
+                  },
+                  {
+                    "id": "e34",
+                    "type": "price",
+                    "label": "45 000 €",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e35",
+                    "type": "badge",
+                    "label": "Saadaval",
+                    "detail": "Broneeritud maalil \"Broneeritud\"",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s4",
+                "heading": "",
+                "layout": "row",
+                "elements": [
+                  {
+                    "id": "e36",
+                    "type": "button",
+                    "label": "Saada ostusoov",
+                    "detail": "Lugu L4",
+                    "items": []
+                  },
+                  {
+                    "id": "e37",
+                    "type": "button",
+                    "label": "Broneeri maal",
+                    "detail": "Lugu L5",
+                    "items": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "code": "L4",
+      "title": "Maali ostjana soovin saata valitud maali kohta ostusoovi päringut, et saada lisainfot või alustada hinnaläbirääkimist.",
+      "status": "idea",
+      "criteria": [
+        {
+          "text": "Ostusoovi vormi kohal on valitud maali pealkiri.",
+          "elementIds": [
+            "e41"
+          ]
+        },
+        {
+          "text": "Vormil on kohustuslik väli \"Nimi\".",
+          "elementIds": [
+            "e44"
+          ]
+        },
+        {
+          "text": "Vormil on kohustuslik väli \"E-post\".",
+          "elementIds": [
+            "e45"
+          ]
+        },
+        {
+          "text": "Vormil on tekstiväli \"Sõnum\".",
+          "elementIds": [
+            "e47"
+          ]
+        },
+        {
+          "text": "Tühja välja \"E-post\" korral kuvab nupu \"Saada päring\" klõpsamine veateate \"Sisesta e-posti aadress\".",
+          "elementIds": [
+            "e45",
+            "e48"
+          ]
+        },
+        {
+          "text": "Pärast päringu saatmist kuvatakse teade \"Päring on saadetud\".",
+          "elementIds": [
+            "e49"
+          ]
+        }
+      ],
+      "mockups": [
+        {
+          "version": 1,
+          "current": true,
+          "note": "AI ettepanek",
+          "createdAt": "2026-10-01T08:23:22.534Z",
+          "spec": {
+            "title": "Ostusoovi päring",
+            "sections": [
+              {
+                "id": "s1",
+                "heading": "",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e38",
+                    "type": "nav",
+                    "label": "Peamenüü",
+                    "detail": "",
+                    "items": [
+                      "Avaleht",
+                      "Müügil olevad maalid",
+                      "Müü maal",
+                      "Vahetus",
+                      "Kontakt"
+                    ]
+                  },
+                  {
+                    "id": "e39",
+                    "type": "link",
+                    "label": "← Tagasi maali juurde",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e40",
+                    "type": "heading",
+                    "label": "Saada ostusoov",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s2",
+                "heading": "Valitud maal",
+                "layout": "row",
+                "elements": [
+                  {
+                    "id": "e42",
+                    "type": "image",
+                    "label": "Maali foto pisipilt",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e41",
+                    "type": "heading",
+                    "label": "Talvine maastik",
+                    "detail": "",
+                    "items": []
+                  },
+                  {
+                    "id": "e43",
+                    "type": "text",
+                    "label": "Konrad Mägi · 45 000 €",
+                    "detail": "",
+                    "items": []
+                  }
+                ]
+              },
+              {
+                "id": "s3",
+                "heading": "Sinu andmed ja sõnum",
+                "layout": "stack",
+                "elements": [
+                  {
+                    "id": "e44",
+                    "type": "input",
+                    "label": "Nimi",
+                    "detail": "kohustuslik",
+                    "items": []
+                  },
+                  {
+                    "id": "e45",
+                    "type": "input",
+                    "label": "E-post",
+                    "detail": "kohustuslik",
+                    "items": []
+                  },
+                  {
+                    "id": "e46",
+                    "type": "input",
+                    "label": "Telefon",
+                    "detail": "valikuline",
+                    "items": []
+                  },
+                  {
+                    "id": "e47",
+                    "type": "input",
+                    "label": "Sõnum",
+                    "detail": "Kirjuta oma küsimus või hinnapakkumine",
+                    "items": []
+                  },
+                  {
+                    "id": "e48",
+                    "type": "button",
+                    "label": "Saada päring",
+                    "detail": "Tühja e-posti korral veateade: \"Sisesta e-posti aadress\"",
+                    "items": []
+                  },
+                  {
+                    "id": "e49",
+                    "type": "notice",
+                    "label": "Päring on saadetud",
+                    "detail": "kuvatakse pärast saatmist",
+                    "items": []
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

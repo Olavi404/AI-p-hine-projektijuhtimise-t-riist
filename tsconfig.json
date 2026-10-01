@@ -3,7 +3,11 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
@@ -12,7 +16,15 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["server", "shared", "client/src", "tests"]
+  "include": [
+    "server",
+    "shared",
+    "client/src",
+    "tests",
+    "scripts"
+  ]
 }
