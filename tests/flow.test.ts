@@ -218,3 +218,45 @@ test("AI puudumisel annab vestlus arusaadava veateate, käsitsi haldus töötab"
   assert.equal(manual.stories.length, 1);
   srv.close();
 });
+
+test("AI vea järel kordab 'Proovi uuesti' ebaõnnestunud AI sammu", async () => {
+  const { AiError } = await import("../server/ai/provider.ts");
+  const base = createProvider({ AI_PROVIDER: "mock" });
+  const failed = new Set<string>();
+  const flaky = {
+    name: "flaky",
+    available: true,
+    generate<T>(task: Parameters<typeof base.generate<T>>[0]) {
+      if ((task.step === "clarify" || task.step === "roles") && !failed.has(task.step)) {
+        failed.add(task.step);
+        return Promise.reject(new AiError("Ajutine viga"));
+      }
+      return base.generate(task);
+    },
+  };
+  const app = createApp(new Repo(openDb(":memory:")), new AiService(flaky));
+  const srv = await new Promise<Server>((resolve) => {
+    const x = app.listen(0, () => resolve(x));
+  });
+  const addr = srv.address();
+  const url = `http://localhost:${typeof addr === "object" && addr ? addr.port : 0}`;
+  const post = (p: string, b: unknown) =>
+    fetch(url + p, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) }).then((r) => r.json() as Promise<ProjectState>);
+  const id = (await post("/api/projects", { name: "Kordus" })).project.id;
+
+  // Idee järel ebaõnnestunud täpsustus: kordus küsib täpsustavad küsimused uuesti
+  let s = await post(`/api/projects/${id}/chat`, { type: "text", text: "Tahame spordiklubi veebi" });
+  let last = s.messages.at(-1)!;
+  assert.ok(last.isError);
+  s = await post(`/api/projects/${id}/chat`, last.nextSteps[0].action);
+  assert.equal(s.messages.at(-1)!.card?.kind, "question");
+
+  // Viimase vastuse järel ebaõnnestunud rollide samm: kordus pakub rollid (mitte ei vasta küsimusele uuesti)
+  for (const q of s.project.context.questions) s = await post(`/api/projects/${id}/chat`, { type: "skip_question", questionId: q.id });
+  last = s.messages.at(-1)!;
+  assert.ok(last.isError);
+  assert.equal(last.nextSteps[0].action.type, "propose_roles");
+  s = await post(`/api/projects/${id}/chat`, last.nextSteps[0].action);
+  assert.equal(s.proposals.at(-1)!.payload.kind, "roles");
+  srv.close();
+});

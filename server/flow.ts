@@ -23,6 +23,9 @@ import type {
 import { STAGE_LABELS } from "../shared/types.ts";
 
 export class Flow {
+  /** Projekti kaupa: AI samm, mida "Proovi uuesti" peab kordama (mitte kasutaja algne tegevus, mis võis juba salvestuda). */
+  private retries = new Map<string, ChatAction>();
+
   constructor(
     private repo: Repo,
     private ai: AiService,
@@ -30,11 +33,13 @@ export class Flow {
 
   /** Käsitleb ühe tegevuse. AI vea korral lisatakse arusaadav veateade koos "Proovi uuesti" valikuga. */
   async handle(projectId: string, action: ChatAction): Promise<void> {
+    this.retries.delete(projectId);
     try {
       await this.dispatch(projectId, action);
     } catch (err) {
       if (err instanceof AiError) {
-        const retry: NextStep[] = err.retryable ? [{ label: "Proovi uuesti", action, primary: true }] : [];
+        const again = this.retries.get(projectId) ?? action;
+        const retry: NextStep[] = err.retryable ? [{ label: "Proovi uuesti", action: again, primary: true }] : [];
         this.say(projectId, err.message, { isError: true, nextSteps: [...retry, ...this.steps(projectId)].slice(0, 4) });
         return;
       }
@@ -176,7 +181,14 @@ export class Flow {
     if (!c.idea) {
       this.user(projectId, text);
       this.repo.updateProject(projectId, { context: { ...c, idea: text }, stage: "idea" });
-      const out = await this.ai.clarify(this.ctx(projectId));
+      let out;
+      try {
+        out = await this.ai.clarify(this.ctx(projectId));
+      } catch (err) {
+        // Idee jääb salvestamata, et "Proovi uuesti" alustaks uuesti täpsustavatest küsimustest.
+        this.repo.updateProject(projectId, { context: { ...this.repo.getProject(projectId).context, idea: "" } });
+        throw err;
+      }
       const questions = out.questions.map((q, i) => ({ id: `q${i + 1}`, text: q.text, multi: q.multi, options: q.options }));
       const fresh = this.repo.getProject(projectId);
       this.repo.updateProject(projectId, { context: { ...fresh.context, questions, questionIndex: 0 } });
@@ -251,6 +263,7 @@ export class Flow {
   // ---------- Rollid ja lood ----------
 
   private async proposeRoles(projectId: string): Promise<void> {
+    this.retries.set(projectId, { type: "propose_roles" });
     this.setStage(projectId, "roles");
     const out = await this.ai.roles(this.ctx(projectId));
     const p = this.repo.createProposal(projectId, null, { kind: "roles", roles: out.roles });
@@ -267,6 +280,7 @@ export class Flow {
   }
 
   private async proposeStories(projectId: string, feedback?: string): Promise<void> {
+    this.retries.set(projectId, { type: "propose_stories", feedback });
     this.setStage(projectId, "stories");
     const out = await this.ai.stories(this.ctx(projectId), feedback);
     const p = this.repo.createProposal(projectId, null, {
@@ -294,6 +308,7 @@ export class Flow {
   }
 
   private async recommendPriority(projectId: string): Promise<void> {
+    this.retries.set(projectId, { type: "recommend_priority" });
     if (this.repo.listStories(projectId).length === 0) {
       this.say(projectId, "Backlog on veel tühi. Lisame esmalt lood.");
       return;
@@ -325,6 +340,7 @@ export class Flow {
   // ---------- Kriteeriumid ja mockup ----------
 
   private async proposeCriteria(projectId: string, storyId: string): Promise<void> {
+    this.retries.set(projectId, { type: "propose_criteria", storyId });
     this.repo.updateProject(projectId, { focusStoryId: storyId, stage: "criteria" });
     const story = this.repo.getStory(storyId);
     const out: CriteriaMockupOut = await this.ai.criteriaMockup(this.ctx(projectId), story);
@@ -364,6 +380,7 @@ export class Flow {
   // ---------- Kliendi täpsustus ----------
 
   private async refine(projectId: string, storyId: string, request: string): Promise<void> {
+    this.retries.set(projectId, { type: "refine", storyId, text: request });
     const story = this.repo.getProjectStory(projectId, storyId);
     this.repo.updateProject(projectId, { focusStoryId: storyId, stage: "refinements" });
     const out = await this.ai.refine(this.ctx(projectId), story, request);
@@ -454,6 +471,7 @@ export class Flow {
   // ---------- Groomimine ----------
 
   private async review(projectId: string): Promise<void> {
+    this.retries.set(projectId, { type: "review" });
     this.setStage(projectId, "grooming");
     if (this.repo.listStories(projectId).length === 0) {
       this.say(projectId, "Backlog on tühi – pole midagi üle vaadata.");
@@ -554,6 +572,7 @@ export class Flow {
   // ---------- Uus vaade promptist ----------
 
   private async newView(projectId: string, request: string): Promise<void> {
+    this.retries.set(projectId, { type: "new_view", text: request });
     const out = await this.ai.newView(this.ctx(projectId), request);
     const p = this.repo.createProposal(projectId, null, {
       kind: "new_view",
