@@ -149,4 +149,4 @@ Projektijuhina soovin näha iga rolli happy path'i eraldi reana, et mitme rollig
 
 ---
 
-*Soovitus:* nüüd, kui tööriist on kasutatav, saab C3 ja C4 lisada tööriista enda projekti „AI projektijuht“ ja lasta AI-l neile kriteeriumid ning mockup'i pakkuda.
+*Soovitus:* nüüd, kui tööriist on kasutatav, saab C3 ja C4 lisada tööriista enda projekti „KickOff AI“ ja lasta AI-l neile kriteeriumid ning mockup'i pakkuda.

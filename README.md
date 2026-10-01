@@ -1,6 +1,6 @@
-# AI projektijuht
+# KickOff AI
 
-AI-põhine projektijuhtimise tööriist (grupp TAK25). Rakendus aitab projektijuhil kliendi umbmäärase idee muuta **juhitud vestluse** kaudu kasutajalugude backlog'iks: täpsustavad küsimused valikutega → rollid → lood happy path'i järjekorras → prioriteet → vastuvõtukriteeriumid ja mockup → kliendi täpsustused → groomimine.
+**KickOff AI** on AI-põhine projektijuhtimise tööriist avakohtumiseks kliendiga (grupp TAK25). Rakendus aitab projektijuhil kliendi umbmäärase idee muuta **juhitud vestluse** kaudu kasutajalugude backlog'iks: täpsustavad küsimused valikutega → rollid → lood happy path'i järjekorras → prioriteet → vastuvõtukriteeriumid ja mockup → kliendi täpsustused → groomimine.
 
 **Põhimõte:** AI juhib protsessi, inimene otsustab. Ükski AI ettepanek ei jõua backlog'i ega muuda olemasolevat lugu ilma kasutaja kinnituseta.
 

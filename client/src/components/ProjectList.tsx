@@ -87,7 +87,7 @@ export function ProjectList({ onOpen }: { onOpen: (id: string) => void }) {
             ▲
           </div>
           <div>
-            <h1>AI projektijuht</h1>
+            <h1>KickOff AI</h1>
             <p className="muted">Kliendi ideest kasutajalugude backlog'iks. AI juhib protsessi, inimene otsustab.</p>
           </div>
         </div>
