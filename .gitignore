@@ -4,3 +4,9 @@ data/*.db
 data/*.db-*
 .env
 *.log
+
+.env.*
+!.env.example
+coverage/
+*.pem
+*.key

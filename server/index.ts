@@ -1,5 +1,6 @@
 // Serveri käivitus. AI võti loetakse keskkonnamuutujatest (.env), mitte lähtekoodist.
 import "dotenv/config";
+import { parseConfig } from "./config.ts";
 import express from "express";
 import fs from "node:fs";
 import path from "node:path";
@@ -16,7 +17,8 @@ if (process.argv.includes("--mock")) {
   process.env.DB_FILE = "data/demo.db";
 }
 
-const port = Number(process.env.API_PORT || 3001);
+const config = parseConfig();
+const port = config.API_PORT;
 const db = openDb(process.env.DB_FILE || "data/app.db");
 const ai = new AiService(createProvider());
 const app = createApp(new Repo(db), ai);
@@ -28,7 +30,7 @@ if (fs.existsSync(path.join(dist, "index.html"))) {
   app.get(/^(?!\/api).*/, (_req, res) => res.sendFile(path.join(dist, "index.html")));
 }
 
-app.listen(port, () => {
+app.listen(port, config.API_HOST, () => {
   console.log(`Server töötab: http://localhost:${port}`);
   console.log(`AI: ${ai.providerName}${ai.available ? "" : " (pole seadistatud – ANTHROPIC_API_KEY puudub, käsitsi haldus töötab)"}`);
 });

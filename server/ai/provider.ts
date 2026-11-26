@@ -87,13 +87,13 @@ class AnthropicProvider implements AiProvider {
       const result = parseAndValidate(task, text, attempt === MAX_ATTEMPTS);
       if (result.ok) return result.value;
       lastProblem = result.problems.join("; ");
-      console.warn(`[ai] ${task.step}: vastus ei läbinud kontrolli (katse ${attempt}): ${lastProblem}`);
+      console.warn("[ai] Response validation failed", { attempt });
       feedback =
         `\n\nSinu eelmine vastus ei läbinud serveri kontrolli. Paranda need probleemid ja vasta uuesti kogu JSON-iga:\n- ` +
         result.problems.join("\n- ") +
         `\n\nEelmine vastus:\n${text.slice(0, 6000)}`;
     }
-    throw new AiError(`AI vastus ei vastanud oodatud vormile ka pärast ${MAX_ATTEMPTS} katset. Proovi uuesti. (${lastProblem.slice(0, 200)})`);
+    throw new AiError("AI response validation failed. Please try again.");
   }
 
   private async request<T>(task: AiTask<T>, feedback: string): Promise<string> {
@@ -141,11 +141,11 @@ class AnthropicProvider implements AiProvider {
           return this.request(task, feedback);
         }
         if (this.useStructuredOutput && /(output_config|format|schema)/i.test(msg)) {
-          console.warn("[ai] struktureeritud väljund lükati tagasi, jätkan skeemi juhisega:", msg);
+          console.warn("[ai] Structured output rejected; using fallback.");
           this.useStructuredOutput = false;
           return this.request(task, feedback);
         }
-        throw new AiError(`AI päring lükati tagasi: ${msg.slice(0, 200)}`, false);
+        throw new AiError("AI request rejected. Please review provider configuration.", false);
       }
       if (err instanceof Anthropic.RateLimitError) {
         throw new AiError("AI teenus on hetkel ülekoormatud (päringute limiit). Proovi hetke pärast uuesti.");
@@ -231,13 +231,13 @@ class ClaudeCodeProvider implements AiProvider {
       const result = parseAndValidate(task, text, attempt === MAX_ATTEMPTS);
       if (result.ok) return result.value;
       lastProblem = result.problems.join("; ");
-      console.warn(`[ai] ${task.step}: vastus ei läbinud kontrolli (katse ${attempt}): ${lastProblem}`);
+      console.warn("[ai] Response validation failed", { attempt });
       feedback =
         `\n\nSinu eelmine vastus ei läbinud serveri kontrolli. Paranda need probleemid ja vasta uuesti kogu JSON-iga:\n- ` +
         result.problems.join("\n- ") +
         `\n\nEelmine vastus:\n${text.slice(0, 6000)}`;
     }
-    throw new AiError(`AI vastus ei vastanud oodatud vormile ka pärast ${MAX_ATTEMPTS} katset. Proovi uuesti. (${lastProblem.slice(0, 200)})`);
+    throw new AiError("AI response validation failed. Please try again.");
   }
 
   private run(system: string, prompt: string, schema: Record<string, unknown>): Promise<string> {
@@ -263,7 +263,7 @@ class ClaudeCodeProvider implements AiProvider {
       child.stderr.on("data", (d) => (err += d));
       child.on("error", (e) => {
         clearTimeout(timer);
-        reject(new AiError(`Claude Code'i käivitamine ebaõnnestus: ${e.message}`, false));
+        reject(new AiError("Claude Code could not be started.", false));
       });
       child.on("close", (code) => {
         clearTimeout(timer);
