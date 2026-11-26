@@ -87,13 +87,13 @@ class AnthropicProvider implements AiProvider {
       const result = parseAndValidate(task, text, attempt === MAX_ATTEMPTS);
       if (result.ok) return result.value;
       lastProblem = result.problems.join("; ");
-      console.warn(`[ai] ${task.step}: vastus ei läbinud kontrolli (katse ${attempt}): ${lastProblem}`);
+      console.warn("[ai] Response validation failed", { attempt });
       feedback =
         `\n\nSinu eelmine vastus ei läbinud serveri kontrolli. Paranda need probleemid ja vasta uuesti kogu JSON-iga:\n- ` +
         result.problems.join("\n- ") +
         `\n\nEelmine vastus:\n${text.slice(0, 6000)}`;
     }
-    throw new AiError(`AI vastus ei vastanud oodatud vormile ka pärast ${MAX_ATTEMPTS} katset. Proovi uuesti. (${lastProblem.slice(0, 200)})`);
+    throw new AiError("AI response validation failed. Please try again.");
   }
 
   private async request<T>(task: AiTask<T>, feedback: string): Promise<string> {
@@ -141,11 +141,11 @@ class AnthropicProvider implements AiProvider {
           return this.request(task, feedback);
         }
         if (this.useStructuredOutput && /(output_config|format|schema)/i.test(msg)) {
-          console.warn("[ai] struktureeritud väljund lükati tagasi, jätkan skeemi juhisega:", msg);
+          console.warn("[ai] Structured output rejected; using fallback.");
           this.useStructuredOutput = false;
           return this.request(task, feedback);
         }
-        throw new AiError(`AI päring lükati tagasi: ${msg.slice(0, 200)}`, false);
+        throw new AiError("AI request rejected. Please review provider configuration.", false);
       }
       if (err instanceof Anthropic.RateLimitError) {
         throw new AiError("AI teenus on hetkel ülekoormatud (päringute limiit). Proovi hetke pärast uuesti.");
@@ -231,13 +231,13 @@ class ClaudeCodeProvider implements AiProvider {
       const result = parseAndValidate(task, text, attempt === MAX_ATTEMPTS);
       if (result.ok) return result.value;
       lastProblem = result.problems.join("; ");
-      console.warn(`[ai] ${task.step}: vastus ei läbinud kontrolli (katse ${attempt}): ${lastProblem}`);
+      console.warn("[ai] Response validation failed", { attempt });
       feedback =
         `\n\nSinu eelmine vastus ei läbinud serveri kontrolli. Paranda need probleemid ja vasta uuesti kogu JSON-iga:\n- ` +
         result.problems.join("\n- ") +
         `\n\nEelmine vastus:\n${text.slice(0, 6000)}`;
     }
-    throw new AiError(`AI vastus ei vastanud oodatud vormile ka pärast ${MAX_ATTEMPTS} katset. Proovi uuesti. (${lastProblem.slice(0, 200)})`);
+    throw new AiError("AI response validation failed. Please try again.");
   }
 
   private run(system: string, prompt: string, schema: Record<string, unknown>): Promise<string> {
@@ -245,10 +245,12 @@ class ClaudeCodeProvider implements AiProvider {
     if (this.model) args.push("--model", this.model);
     if (["low", "medium", "high"].includes(this.effort)) args.push("--effort", this.effort);
     // API võti ei tohi lapsprotsessi jõuda, muidu kasutaks Claude Code tellimuse asemel API krediiti.
-    const env = { ...process.env };
-    delete env.ANTHROPIC_API_KEY;
-    delete env.ANTHROPIC_AUTH_TOKEN;
-    delete env.CLAUDECODE;
+    const env: NodeJS.ProcessEnv = {};
+    // Keep only OS/runtime variables required by the locally authenticated CLI.
+    const allowed = new Set(["PATH","HOME","USERPROFILE","APPDATA","LOCALAPPDATA","SYSTEMROOT","WINDIR","COMSPEC","PATHEXT","TEMP","TMP","TMPDIR","LANG","LC_ALL","XDG_CONFIG_HOME","XDG_DATA_HOME","XDG_CACHE_HOME"]);
+    for (const [key, value] of Object.entries(process.env)) {
+      if (allowed.has(key.toUpperCase())) env[key] = value;
+    }
 
     return new Promise((resolve, reject) => {
       // Viip läheb stdin-i kaudu (Windowsi käsurea pikkuse piirang); töökaust on ajutine, et projekti faile ei loetaks.
@@ -263,7 +265,7 @@ class ClaudeCodeProvider implements AiProvider {
       child.stderr.on("data", (d) => (err += d));
       child.on("error", (e) => {
         clearTimeout(timer);
-        reject(new AiError(`Claude Code'i käivitamine ebaõnnestus: ${e.message}`, false));
+        reject(new AiError("Claude Code could not be started.", false));
       });
       child.on("close", (code) => {
         clearTimeout(timer);
@@ -274,7 +276,7 @@ class ClaudeCodeProvider implements AiProvider {
           res = null;
         }
         if (!res) {
-          return reject(new AiError(`Claude Code lõpetas veaga (kood ${code}): ${(err || out).trim().slice(0, 300)}`));
+          return reject(new AiError("Claude Code exited unsuccessfully. Check local CLI configuration."));
         }
         if (res.is_error) {
           const msg = String(res.result ?? err ?? "").trim();
@@ -282,9 +284,9 @@ class ClaudeCodeProvider implements AiProvider {
             return reject(new AiError("Claude Code pole sisse logitud. Käivita terminalis `claude` ja logi sisse oma Claude'i kontoga.", false));
           }
           if (/usage limit|rate limit|quota|limit reached/i.test(msg)) {
-            return reject(new AiError(`Claude'i tellimuse kasutuslimiit on täis: ${msg.slice(0, 200)}`));
+            return reject(new AiError("Claude subscription usage limit reached. Please check the local CLI."));
           }
-          return reject(new AiError(`Claude Code tagastas vea: ${msg.slice(0, 300)}`));
+          return reject(new AiError("Claude Code returned an error. Please try again."));
         }
         resolve(res.structured_output !== undefined ? JSON.stringify(res.structured_output) : String(res.result ?? ""));
       });

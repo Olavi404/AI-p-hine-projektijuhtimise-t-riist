@@ -229,7 +229,7 @@ export function createApp(repo: Repo, ai: AiService, opts: { exportDir?: string 
     } else if (err instanceof NotFoundError) {
       res.status(404).json({ error: err.message });
     } else {
-      console.error(err);
+      console.error("[server] Unhandled request error");
       res.status(500).json({ error: "Serveri viga. Vaata serveri logi." });
     }
   });
