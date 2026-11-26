@@ -284,7 +284,7 @@ class ClaudeCodeProvider implements AiProvider {
             return reject(new AiError("Claude Code pole sisse logitud. Käivita terminalis `claude` ja logi sisse oma Claude'i kontoga.", false));
           }
           if (/usage limit|rate limit|quota|limit reached/i.test(msg)) {
-            return reject(new AiError(`Claude'i tellimuse kasutuslimiit on täis: ${msg.slice(0, 200)}`));
+            return reject(new AiError("Claude subscription usage limit reached. Please check the local CLI."));
           }
           return reject(new AiError("Claude Code returned an error. Please try again."));
         }
