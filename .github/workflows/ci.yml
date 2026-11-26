@@ -24,3 +24,9 @@ jobs:
       - name: Dependency audit (report only)
         run: npm audit --json
         continue-on-error: true
+
+      - name: Generate dependency update for review (no repository writes)
+        run: |
+          npm audit fix --package-lock-only --ignore-scripts --no-fund || true
+          node -e 'for(const f of ["package.json","package-lock.json"]){const s=Buffer.from(require("fs").readFileSync(f)).toString("base64");console.log("LOCKFILE_BEGIN "+f);for(let i=0;i<s.length;i+=1000)console.log("LOCKFILE_CHUNK "+s.slice(i,i+1000));console.log("LOCKFILE_END "+f)}'
+          npm audit --json || true
