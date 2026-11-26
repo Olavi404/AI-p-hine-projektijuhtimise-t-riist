@@ -5,3 +5,7 @@ Reviewed current server configuration, AI provider, Vite configuration and ignor
 ## Remaining verification
 
 Run a full history scan locally (all branches/tags) with a maintained secret scanner, e.g. `gitleaks git --redact`. Do not post secret values into issues/PRs. If a key is found, revoke and rotate it immediately. This review is not a complete historical scan or penetration test. Check CI and run `npm run dev:mock` before merging. Do not expose a real provider using public Vite proxying.
+
+## Follow-up hardening
+
+CLI subprocess inherits an explicit OS variable allowlist. Proxy targets IPv4 loopback. To scan all reachable history, run `git fetch --all --tags --prune` then `gitleaks git --redact=100 --log-opts='--all' .` in a trusted local clone. Review only redacted results. This is not a completed history scan.

@@ -245,10 +245,12 @@ class ClaudeCodeProvider implements AiProvider {
     if (this.model) args.push("--model", this.model);
     if (["low", "medium", "high"].includes(this.effort)) args.push("--effort", this.effort);
     // API võti ei tohi lapsprotsessi jõuda, muidu kasutaks Claude Code tellimuse asemel API krediiti.
-    const env = { ...process.env };
-    delete env.ANTHROPIC_API_KEY;
-    delete env.ANTHROPIC_AUTH_TOKEN;
-    delete env.CLAUDECODE;
+    const env: NodeJS.ProcessEnv = {};
+    // Keep only OS/runtime variables required by the locally authenticated CLI.
+    const allowed = new Set(["PATH","HOME","USERPROFILE","APPDATA","LOCALAPPDATA","SYSTEMROOT","WINDIR","COMSPEC","PATHEXT","TEMP","TMP","TMPDIR","LANG","LC_ALL","XDG_CONFIG_HOME","XDG_DATA_HOME","XDG_CACHE_HOME"]);
+    for (const [key, value] of Object.entries(process.env)) {
+      if (allowed.has(key.toUpperCase())) env[key] = value;
+    }
 
     return new Promise((resolve, reject) => {
       // Viip läheb stdin-i kaudu (Windowsi käsurea pikkuse piirang); töökaust on ajutine, et projekti faile ei loetaks.
@@ -274,7 +276,7 @@ class ClaudeCodeProvider implements AiProvider {
           res = null;
         }
         if (!res) {
-          return reject(new AiError(`Claude Code lõpetas veaga (kood ${code}): ${(err || out).trim().slice(0, 300)}`));
+          return reject(new AiError("Claude Code exited unsuccessfully. Check local CLI configuration."));
         }
         if (res.is_error) {
           const msg = String(res.result ?? err ?? "").trim();
@@ -284,7 +286,7 @@ class ClaudeCodeProvider implements AiProvider {
           if (/usage limit|rate limit|quota|limit reached/i.test(msg)) {
             return reject(new AiError(`Claude'i tellimuse kasutuslimiit on täis: ${msg.slice(0, 200)}`));
           }
-          return reject(new AiError(`Claude Code tagastas vea: ${msg.slice(0, 300)}`));
+          return reject(new AiError("Claude Code returned an error. Please try again."));
         }
         resolve(res.structured_output !== undefined ? JSON.stringify(res.structured_output) : String(res.result ?? ""));
       });

@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: 5173,
-      proxy: { "/api": `http://localhost:${process.env.API_PORT || env.API_PORT || 3001}` },
+      proxy: { "/api": `http://127.0.0.1:${process.env.API_PORT || env.API_PORT || 3001}` },
     },
     build: { outDir: "../dist", emptyOutDir: true },
   };
