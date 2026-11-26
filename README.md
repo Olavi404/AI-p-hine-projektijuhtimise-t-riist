@@ -1,5 +1,29 @@
 # KickOff AI
 
+AI-assisted requirements discovery that turns a client idea into user stories, acceptance criteria and versioned mockups, with human approval before changes.
+
+## Technology stack
+
+TypeScript, React, Vite, Express 5, Node.js SQLite, Zod and Anthropic SDK.
+
+## Getting started
+
+Node.js 22.13+; run `npm ci`, then `npm run dev:mock` for a demonstration without an API key. Open `http://localhost:5173`. For real AI, configure `.env` using `.env.example`.
+
+## Testing
+
+`npm test`, `npm run typecheck`, `npm run build`.
+
+## Scope and limitations
+
+School project (TAK25); mock mode is available. Do not commit API keys.
+
+---
+
+## Original project documentation (Estonian)
+
+# KickOff AI
+
 **KickOff AI** on AI-põhine projektijuhtimise tööriist avakohtumiseks kliendiga (grupp TAK25). Rakendus aitab projektijuhil kliendi umbmäärase idee muuta **juhitud vestluse** kaudu kasutajalugude backlog'iks: täpsustavad küsimused valikutega → rollid → lood happy path'i järjekorras → prioriteet → vastuvõtukriteeriumid ja mockup → kliendi täpsustused → groomimine.
 
 **Põhimõte:** AI juhib protsessi, inimene otsustab. Ükski AI ettepanek ei jõua backlog'i ega muuda olemasolevat lugu ilma kasutaja kinnituseta.
